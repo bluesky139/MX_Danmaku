@@ -1,4 +1,4 @@
-package li.lingfeng.globaldanmakudroid;
+package li.lingfeng.globaldanmakudroid.util;
 
 import android.util.Log;
 

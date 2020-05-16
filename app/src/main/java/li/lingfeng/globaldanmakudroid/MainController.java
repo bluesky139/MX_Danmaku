@@ -12,6 +12,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 
+import li.lingfeng.globaldanmakudroid.util.Logger;
+
 public class MainController extends ContentProvider {
 
     private WindowManager mWindowManager;

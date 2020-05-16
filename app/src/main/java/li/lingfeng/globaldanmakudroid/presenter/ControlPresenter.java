@@ -1,11 +1,9 @@
 package li.lingfeng.globaldanmakudroid.presenter;
 
 import io.reactivex.disposables.Disposable;
-import li.lingfeng.globaldanmakudroid.Logger;
+import li.lingfeng.globaldanmakudroid.util.Logger;
 import li.lingfeng.globaldanmakudroid.base.BasePresenter;
-import li.lingfeng.globaldanmakudroid.base.IBaseView;
 import li.lingfeng.globaldanmakudroid.contact.ControlContact;
-import li.lingfeng.globaldanmakudroid.contact.MainContact;
 import li.lingfeng.globaldanmakudroid.model.ControlModel;
 
 public class ControlPresenter extends BasePresenter<ControlContact.View> implements ControlContact.Presenter {
