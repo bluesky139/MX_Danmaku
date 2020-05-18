@@ -8,6 +8,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 public interface DanDanRetrofitService {
 
@@ -20,5 +21,5 @@ public interface DanDanRetrofitService {
 
     @GET("search/episodes")
     @Headers({"Accept: application/json"})
-    Observable<DanDanSearchEpisodeBean> searchEpisode(@Field("anime") String anime);
+    Observable<DanDanSearchEpisodeBean> searchEpisode(@Query("anime") String anime);
 }

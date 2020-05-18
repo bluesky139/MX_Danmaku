@@ -1,5 +1,6 @@
 package li.lingfeng.globaldanmakudroid;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Handler;
@@ -7,9 +8,11 @@ import android.os.Message;
 import android.util.Pair;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -27,6 +30,7 @@ import li.lingfeng.globaldanmakudroid.bean.DanDanSearchEpisodeBean.Anime;
 import li.lingfeng.globaldanmakudroid.bean.DanDanSearchEpisodeBean.Episode;
 import li.lingfeng.globaldanmakudroid.contact.ControlContact;
 import li.lingfeng.globaldanmakudroid.presenter.ControlPresenter;
+import li.lingfeng.globaldanmakudroid.ui.widget.OverlayDialog;
 import li.lingfeng.globaldanmakudroid.util.HashUtils;
 import li.lingfeng.globaldanmakudroid.util.Logger;
 import li.lingfeng.globaldanmakudroid.util.ToastUtils;
@@ -43,8 +47,8 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
     private boolean mDanmakuShown = false;
     //private TextView mStatusView;
     private MainView mMainView;
+    private AlertDialog mTitleSearchDialog;
     private ControlPresenter mPresenter = new ControlPresenter();
-    private ViewGroup mTitleChooseView;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -133,20 +137,19 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
             return;
         }
         if (!matchBean.isMatched && matchBean.matches.size() > 0) {
-            ViewGroup viewGroup = getTitleChooseView().findViewById(R.id.title_choose_layout);
-            ListView listView = viewGroup.findViewById(R.id.match_list);
             String[] titles = matchBean.matches.stream().map(m -> m.animeTitle + " - " + m.episodeTitle).toArray(String[]::new);
-            listView.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, android.R.id.text1, titles));
-            listView.setOnItemClickListener((parent, view, position, id) -> {
-                DanDanMatchBean.Match match = matchBean.matches.get(position);
-                mMainView.appendStatusLog("User choose " + match);
-            });
-            viewGroup.findViewById(R.id.go_search_button).setOnClickListener(v -> {
-                Logger.i("No title match.");
-                showUserSearchDialog();
-                viewGroup.setVisibility(View.GONE);
-            });
-            viewGroup.setVisibility(View.VISIBLE);
+            new OverlayDialog.Builder(getContext())
+                    .setTitle("Select title")
+                    .setItems(titles, (_dialog, which) -> {
+                        DanDanMatchBean.Match match = matchBean.matches.get(which);
+                        mMainView.appendStatusLog("User choose " + match);
+                    })
+                    .setNegativeButton("Search", (_dialog, which) -> {
+                        Logger.i("No title match.");
+                        showUserSearchDialog();
+                        _dialog.dismiss();
+                    })
+                    .show();
         }
     }
 
@@ -159,29 +162,48 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
         setState(STATE_DANMAKU_HIDDEN);
     }
 
-    private ViewGroup getTitleChooseView() {
-        if (mTitleChooseView == null) {
-            mTitleChooseView = (ViewGroup) LayoutInflater.from(getContext()).inflate(R.layout.title_choose_view, this);
-        }
-        return mTitleChooseView;
-    }
-
     private void showUserSearchDialog() {
-        ViewGroup viewGroup = getTitleChooseView().findViewById(R.id.title_search_layout);
-        viewGroup.findViewById(R.id.search_box).setOnClickListener(v -> {
-            String words = ((EditText) viewGroup.findViewById(R.id.search_box)).getText().toString();
+        mTitleSearchDialog = new OverlayDialog.Builder(getContext())
+                .setTitle("Search title")
+                .setView(R.layout.title_search_dialog)
+                .create();
+        mTitleSearchDialog.setOnDismissListener(dialog -> {
+            mTitleSearchDialog = null;
+        });
+        mTitleSearchDialog.show();
+
+        EditText searchBox = mTitleSearchDialog.findViewById(R.id.search_box);
+        Button searchButton = mTitleSearchDialog.findViewById(R.id.search_button);
+        searchBox.setOnFocusChangeListener((v, hasFocus) -> {
+            InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(searchBox.getWindowToken(), 0);
+        });
+        searchBox.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                searchButton.performClick();
+                return true;
+            }
+            return false;
+        });
+        searchButton.setOnClickListener(v -> {
+            String words = ((EditText) mTitleSearchDialog.findViewById(R.id.search_box)).getText().toString();
             if (!words.isEmpty()) {
+                searchBox.clearFocus();
+                searchButton.setEnabled(false);
                 mPresenter.searchEpisode(words);
             }
         });
-        viewGroup.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onEpisodeSearched(DanDanSearchEpisodeBean searchEpisodeBean) {
+        mTitleSearchDialog.findViewById(R.id.search_button).setEnabled(true);
         if (searchEpisodeBean.errorCode != 0) {
             ToastUtils.show(getContext(), "Episode search error, code " + searchEpisodeBean.errorCode + ", " + searchEpisodeBean.errorMessage);
             return;
+        }
+        if (searchEpisodeBean.hasMore) {
+            ToastUtils.show(getContext(), "Type more words for precise search.");
         }
 
         Object[] episodes = searchEpisodeBean.animes.stream().flatMap(a -> a.episodes.stream().map(e -> Pair.create(a, e))).toArray();
@@ -189,16 +211,12 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
             Pair<Anime, Episode> p = (Pair<Anime, Episode>) e;
             return p.first.animeTitle + " - " + p.second.episodeTitle;
         }).toArray(String[]::new);
-        ListView listView = getTitleChooseView().findViewById(R.id.search_result_list);
+        ListView listView = mTitleSearchDialog.findViewById(R.id.search_result_list);
         listView.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, android.R.id.text1, titles));
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Pair<Anime, Episode> pair = (Pair<Anime, Episode>) episodes[position];
-            //mMainView.appendStatusLog("User choose " + match);
+            mMainView.appendStatusLog("User choose " + pair.first + ", " + pair.second);
+            mTitleSearchDialog.dismiss();
         });
-
-        if (searchEpisodeBean.hasMore) {
-            //ToastUtils.show(getContext());
-            return;
-        }
     }
 }

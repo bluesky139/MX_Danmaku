@@ -10,6 +10,15 @@ public class DanDanSearchEpisodeBean {
     public boolean success;
     public String errorMessage;
 
+    @Override
+    public String toString() {
+        if (errorCode == 0) {
+            return "DanDanSearchEpisodeBean@" + hashCode() + " hasMore " + hasMore + ", animes " + animes.size();
+        } else {
+            return "DanDanSearchEpisodeBean@" + hashCode() + " errorCode " + errorCode + ", errorMessage " + errorMessage;
+        }
+    }
+
     public static class Anime {
 
         public int animeId;
@@ -17,11 +26,21 @@ public class DanDanSearchEpisodeBean {
         public String type;
         public String typeDescription;
         public List<Episode> episodes;
+
+        @Override
+        public String toString() {
+            return "Anime@" + hashCode() + " animeId " + animeId + ", animeTitle " + animeTitle;
+        }
     }
 
     public static class Episode {
 
         public int episodeId;
         public String episodeTitle;
+
+        @Override
+        public String toString() {
+            return "Episode@" + hashCode() + " episodeId " + episodeId + ", episodeTitle " + episodeTitle;
+        }
     }
 }
