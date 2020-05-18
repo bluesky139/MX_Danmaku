@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -38,7 +39,7 @@ import master.flame.danmaku.danmaku.parser.IDataSource;
 import master.flame.danmaku.danmaku.util.IOUtils;
 import master.flame.danmaku.ui.widget.DanmakuView;
 
-public class MainView extends FrameLayout {
+public class MainView extends RelativeLayout {
 
     private DanmakuView mDanmakuView;
     private TextView mStatusView;
@@ -50,12 +51,6 @@ public class MainView extends FrameLayout {
         ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.main_view, this);
         mDanmakuView = viewGroup.findViewById(R.id.danmaku_view);
         mStatusView = viewGroup.findViewById(R.id.status_view);
-        mStatusView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Logger.d("click...");
-            }
-        });
     }
 
     public void initDanmakuView() {
@@ -92,7 +87,7 @@ public class MainView extends FrameLayout {
 
                 @Override
                 public void prepared() {
-                    mDanmakuView.start();
+                    //mDanmakuView.start();
                 }
             });
             mDanmakuView.prepare(mParser, mDanmakuContext);
@@ -184,5 +179,15 @@ public class MainView extends FrameLayout {
         spannableStringBuilder.append("图文混排");
         spannableStringBuilder.setSpan(new BackgroundColorSpan(Color.parseColor("#8A2233B1")), 0, spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         return spannableStringBuilder;
+    }
+
+    public void appendStatusLog(String msg) {
+        Logger.i(msg);
+        mStatusView.setText(mStatusView.getText().toString() + '\n' + msg);
+    }
+
+    public void appendStatusError(String msg) {
+        Logger.e(msg);
+        mStatusView.setText(mStatusView.getText().toString() + '\n' + msg);
     }
 }

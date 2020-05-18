@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
-        android:id="@+id/status_view"
-        android:text="bbbbbbbbbbbbbbbbbbbbbb"
-        android:layout_width="200dp"
+    <ImageButton
+        android:id="@+id/show_hide_button"
+        android:src="@drawable/danmaku_hidden_button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </merge>

@@ -19,5 +19,21 @@ public class DanDanMatchBean {
         public String type;
         public String typeDescription;
         public int shift;
+
+        @Override
+        public String toString() {
+            return "Match@" + hashCode() + " episodeId " + episodeId + ", animeId " + animeId
+                    + ", animeTitle " + animeTitle + ", episodeTitle " + episodeTitle;
+        }
+    }
+
+    @Override
+    public String toString() {
+        if (errorCode == 0) {
+            return "DanDanMatchBean@" + hashCode() + " isMatched " + isMatched + ", matches " + matches.size()
+                    + (matches.size() > 0 ? "(" + matches.get(0) + ")" : "");
+        } else {
+            return "DanDanMatchBean@" + hashCode() + " errorCode " + errorCode + ", errorMessage " + errorMessage;
+        }
     }
 }

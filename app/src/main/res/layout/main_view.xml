@@ -8,7 +8,9 @@
 
     <TextView
         android:id="@+id/status_view"
-        android:text="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        android:layout_width="200dp"
-        android:layout_height="400dp" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:gravity="left|bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </merge>
