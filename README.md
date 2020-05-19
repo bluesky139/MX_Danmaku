@@ -1,1 +1,1 @@
-# GlobalDanmakuDroid
+# MX Danmaku
