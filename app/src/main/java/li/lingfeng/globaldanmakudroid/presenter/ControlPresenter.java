@@ -3,6 +3,7 @@ package li.lingfeng.globaldanmakudroid.presenter;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import li.lingfeng.globaldanmakudroid.base.BasePresenter;
+import li.lingfeng.globaldanmakudroid.bean.DanDanCommentBean;
 import li.lingfeng.globaldanmakudroid.bean.DanDanMatchBean;
 import li.lingfeng.globaldanmakudroid.bean.DanDanSearchEpisodeBean;
 import li.lingfeng.globaldanmakudroid.contact.ControlContact;
@@ -44,6 +45,23 @@ public class ControlPresenter extends BasePresenter<ControlContact.View> impleme
                     searchEpisodeBean.errorCode = -1;
                     searchEpisodeBean.errorMessage = err.toString();
                     mView.onEpisodeSearched(searchEpisodeBean);
+                });
+        addSubscription(disposable);
+    }
+
+    @Override
+    public void getComments(int episodeId) {
+        Disposable disposable = model.getComments(episodeId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(commentBean -> {
+                    Logger.d("Got commentBean " + commentBean);
+                    mView.onCommentsGot(commentBean);
+                }, err -> {
+                    Logger.e("Error " + err);
+                    DanDanCommentBean commentBean = new DanDanCommentBean();
+                    commentBean.errorCode = -1;
+                    commentBean.errorMessage = err.toString();
+                    mView.onCommentsGot(commentBean);
                 });
         addSubscription(disposable);
     }

@@ -1,6 +1,7 @@
 package li.lingfeng.globaldanmakudroid.net;
 
 import io.reactivex.Observable;
+import li.lingfeng.globaldanmakudroid.bean.DanDanCommentBean;
 import li.lingfeng.globaldanmakudroid.bean.DanDanMatchBean;
 import li.lingfeng.globaldanmakudroid.bean.DanDanSearchEpisodeBean;
 import retrofit2.http.Field;
@@ -8,6 +9,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface DanDanRetrofitService {
@@ -22,4 +24,8 @@ public interface DanDanRetrofitService {
     @GET("search/episodes")
     @Headers({"Accept: application/json"})
     Observable<DanDanSearchEpisodeBean> searchEpisode(@Query("anime") String anime);
+
+    @GET("comment/{episodeId}")
+    @Headers({"Accept: application/json"})
+    Observable<DanDanCommentBean> getComments(@Path("episodeId") int episodeId, @Query("withRelated") boolean withRelated);
 }

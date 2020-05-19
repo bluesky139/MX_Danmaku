@@ -1,6 +1,7 @@
 package li.lingfeng.globaldanmakudroid.model;
 
 import io.reactivex.Observable;
+import li.lingfeng.globaldanmakudroid.bean.DanDanCommentBean;
 import li.lingfeng.globaldanmakudroid.bean.DanDanMatchBean;
 import li.lingfeng.globaldanmakudroid.bean.DanDanSearchEpisodeBean;
 import li.lingfeng.globaldanmakudroid.net.DanDanRetrofitManager;
@@ -14,5 +15,9 @@ public class ControlModel {
 
     public Observable<DanDanSearchEpisodeBean> searchEpisode(String anime) {
         return DanDanRetrofitManager.instance().getService().searchEpisode(anime);
+    }
+
+    public Observable<DanDanCommentBean> getComments(int episodeId) {
+        return DanDanRetrofitManager.instance().getService().getComments(episodeId, true);
     }
 }

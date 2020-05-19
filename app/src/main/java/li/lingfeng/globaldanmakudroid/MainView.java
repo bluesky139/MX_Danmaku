@@ -22,7 +22,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
+import java.util.List;
 
+import li.lingfeng.globaldanmakudroid.bean.DanDanCommentBean.Comment;
+import li.lingfeng.globaldanmakudroid.presenter.CommentBeanSource;
+import li.lingfeng.globaldanmakudroid.presenter.DanDanDanmakuParser;
 import li.lingfeng.globaldanmakudroid.util.Logger;
 import master.flame.danmaku.danmaku.loader.ILoader;
 import master.flame.danmaku.danmaku.loader.IllegalDataException;
@@ -53,7 +57,8 @@ public class MainView extends RelativeLayout {
         mStatusView = viewGroup.findViewById(R.id.status_view);
     }
 
-    public void initDanmakuView() {
+    public void initDanmakuView(List<Comment> comments) {
+        appendStatusLog("Init danmaku view with " + comments.size() + " comments.");
         // 设置最大显示行数
         HashMap<Integer, Integer> maxLinesPair = new HashMap<Integer, Integer>();
         maxLinesPair.put(BaseDanmaku.TYPE_SCROLL_RL, 5); // 滚动弹幕最大显示5行
@@ -69,7 +74,7 @@ public class MainView extends RelativeLayout {
                 .setMaximumLines(maxLinesPair)
                 .preventOverlapping(overlappingEnablePair).setDanmakuMargin(40);
         if (mDanmakuView != null) {
-            mParser = createParser(this.getResources().openRawResource(R.raw.comments));
+            mParser = createParser(comments);
             mDanmakuView.setCallback(new master.flame.danmaku.controller.DrawHandler.Callback() {
                 @Override
                 public void updateTimer(DanmakuTimer timer) {
@@ -87,7 +92,7 @@ public class MainView extends RelativeLayout {
 
                 @Override
                 public void prepared() {
-                    //mDanmakuView.start();
+                    mDanmakuView.start();
                 }
             });
             mDanmakuView.prepare(mParser, mDanmakuContext);
@@ -96,30 +101,11 @@ public class MainView extends RelativeLayout {
         }
     }
 
-    private BaseDanmakuParser createParser(InputStream stream) {
-
-        if (stream == null) {
-            return new BaseDanmakuParser() {
-
-                @Override
-                protected Danmakus parse() {
-                    return new Danmakus();
-                }
-            };
-        }
-
-        ILoader loader = DanmakuLoaderFactory.create(DanmakuLoaderFactory.TAG_BILI);
-
-        try {
-            loader.load(stream);
-        } catch (IllegalDataException e) {
-            e.printStackTrace();
-        }
-        BaseDanmakuParser parser = new BiliDanmukuParser();
-        IDataSource<?> dataSource = loader.getDataSource();
+    private BaseDanmakuParser createParser(List<Comment> comments) {
+        CommentBeanSource dataSource = new CommentBeanSource(comments);
+        BaseDanmakuParser parser = new DanDanDanmakuParser();
         parser.load(dataSource);
         return parser;
-
     }
 
     private BaseCacheStuffer.Proxy mCacheStufferAdapter = new BaseCacheStuffer.Proxy() {

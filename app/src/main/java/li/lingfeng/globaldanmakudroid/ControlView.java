@@ -24,11 +24,13 @@ import org.apache.commons.lang3.math.NumberUtils;
 import java.util.Arrays;
 import java.util.List;
 
+import li.lingfeng.globaldanmakudroid.bean.DanDanCommentBean;
 import li.lingfeng.globaldanmakudroid.bean.DanDanMatchBean;
 import li.lingfeng.globaldanmakudroid.bean.DanDanSearchEpisodeBean;
 import li.lingfeng.globaldanmakudroid.bean.DanDanSearchEpisodeBean.Anime;
 import li.lingfeng.globaldanmakudroid.bean.DanDanSearchEpisodeBean.Episode;
 import li.lingfeng.globaldanmakudroid.contact.ControlContact;
+import li.lingfeng.globaldanmakudroid.presenter.CommentBeanSource;
 import li.lingfeng.globaldanmakudroid.presenter.ControlPresenter;
 import li.lingfeng.globaldanmakudroid.ui.widget.OverlayDialog;
 import li.lingfeng.globaldanmakudroid.util.HashUtils;
@@ -38,9 +40,10 @@ import li.lingfeng.globaldanmakudroid.util.Utils;
 
 public class ControlView extends RelativeLayout implements ControlContact.View {
 
-    private static final int STATE_DANMAKU_HIDDEN    = 0;
-    private static final int STATE_PREPARE_FILE_INFO = 1;
-    private static final int STATE_DANMAKU_MATCHING  = 2;
+    private static final int STATE_DANMAKU_HIDDEN      = 0;
+    private static final int STATE_PREPARE_FILE_INFO   = 1;
+    private static final int STATE_DANMAKU_MATCHING    = 2;
+    private static final int STATE_RETRIEVING_COMMENTS = 3;
     private static final SparseArray<String> sStateStrings = Utils.clsIntFieldsToStrings(ControlView.class, "STATE_");
 
     private ImageButton mShowHideButton;
@@ -77,7 +80,6 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
             if (!mDanmakuShown) {
                 mDanmakuShown = true;
                 mShowHideButton.setImageResource(R.drawable.danmaku_shown_button);
-                mMainView.initDanmakuView();
                 setState(STATE_PREPARE_FILE_INFO);
             } else {
                 mDanmakuShown = false;
@@ -136,20 +138,27 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
             danmakuOff(false, "danmaku match error, code " + matchBean.errorCode + ", " + matchBean.errorMessage);
             return;
         }
-        if (!matchBean.isMatched && matchBean.matches.size() > 0) {
-            String[] titles = matchBean.matches.stream().map(m -> m.animeTitle + " - " + m.episodeTitle).toArray(String[]::new);
-            new OverlayDialog.Builder(getContext())
-                    .setTitle("Select title")
-                    .setItems(titles, (_dialog, which) -> {
-                        DanDanMatchBean.Match match = matchBean.matches.get(which);
-                        mMainView.appendStatusLog("User choose " + match);
-                    })
-                    .setNegativeButton("Search", (_dialog, which) -> {
-                        Logger.i("No title match.");
-                        showUserSearchDialog();
-                        _dialog.dismiss();
-                    })
-                    .show();
+        if (!matchBean.isMatched) {
+            if (matchBean.matches.size() > 0) {
+                String[] titles = matchBean.matches.stream().map(m -> m.animeTitle + " - " + m.episodeTitle).toArray(String[]::new);
+                new OverlayDialog.Builder(getContext())
+                        .setTitle("Select title")
+                        .setItems(titles, (_dialog, which) -> {
+                            DanDanMatchBean.Match match = matchBean.matches.get(which);
+                            mMainView.appendStatusLog("User choose " + match);
+                            retrieveComments(match.episodeId);
+                        })
+                        .setNegativeButton("Search", (_dialog, which) -> {
+                            Logger.i("No title match.");
+                            showUserSearchDialog();
+                            _dialog.dismiss();
+                        })
+                        .show();
+            } else {
+                showUserSearchDialog();
+            }
+        } else {
+            retrieveComments(matchBean.matches.get(0).episodeId);
         }
     }
 
@@ -160,6 +169,11 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
             mMainView.appendStatusError("Danmaku off by system, " + reason);
         }
         setState(STATE_DANMAKU_HIDDEN);
+    }
+
+    private void retrieveComments(int episodeId) {
+        mPresenter.getComments(episodeId);
+        setState(STATE_RETRIEVING_COMMENTS);
     }
 
     private void showUserSearchDialog() {
@@ -217,6 +231,20 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
             Pair<Anime, Episode> pair = (Pair<Anime, Episode>) episodes[position];
             mMainView.appendStatusLog("User choose " + pair.first + ", " + pair.second);
             mTitleSearchDialog.dismiss();
+            retrieveComments(pair.second.episodeId);
         });
+    }
+
+    @Override
+    public void onCommentsGot(DanDanCommentBean commentBean) {
+        if (commentBean.errorCode != 0) {
+            mMainView.appendStatusError("Error to get comments, code " + commentBean.errorCode + ", " + commentBean.errorMessage);
+            return;
+        }
+        if (commentBean.count == 0) {
+            mMainView.appendStatusLog("No comment.");
+            return;
+        }
+        mMainView.initDanmakuView(commentBean.comments);
     }
 }
