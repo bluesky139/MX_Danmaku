@@ -26,7 +26,8 @@
         </activity>
         <provider
             android:authorities="li.lingfeng.mxdanmaku.MainController"
-            android:name="li.lingfeng.mxdanmaku.MainController">
+            android:name="li.lingfeng.mxdanmaku.MainController"
+            android:exported="true">
         </provider>
         <service android:name="li.lingfeng.mxdanmaku.PlayerAccessibility"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"

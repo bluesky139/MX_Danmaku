@@ -3,7 +3,6 @@ package li.lingfeng.mxdanmaku;
 import android.accessibilityservice.AccessibilityService;
 import android.content.ComponentName;
 import android.content.ContentValues;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.view.accessibility.AccessibilityEvent;
@@ -39,7 +38,7 @@ public class PlayerAccessibility extends AccessibilityService {
                         ContentValues values = new ContentValues(2);
                         values.put("file_path", "file:///sdcard/みなみけ ただいま (Creditless OP) BDrip x264-ank [XV");
                         values.put("video_duration", 92);
-                        sendCommand("create", values);
+                        sendCommand(OP.OP_CREATE, values);
                         mInMXPLayer = true;
                         mPlaying = true;
                         return;
@@ -66,7 +65,7 @@ public class PlayerAccessibility extends AccessibilityService {
                             + (strings.length == 3 ? Integer.parseInt(strings[0]) * 3600 : 0);
                     ContentValues values = new ContentValues(1);
                     values.put("seconds", seconds);
-                    sendCommand("seek_to", values);
+                    sendCommand(OP.OP_SEEK_TO, values);
                     resumeIfNot();
                 } else {
                     AccessibilityNodeInfo rootNode = getRootInActiveWindow();
@@ -78,12 +77,12 @@ public class PlayerAccessibility extends AccessibilityService {
                         if (!mControlShown) {
                             Logger.v("Show danmaku control button.");
                             mControlShown = true;
-                            sendCommand("show_control");
+                            sendCommand(OP.OP_SHOW_CONTROL);
                         }
                     } else if (mControlShown) {
                         Logger.v("Hide danmaku control button.");
                         mControlShown = false;
-                        sendCommand("hide_control");
+                        sendCommand(OP.OP_HIDE_CONTROL);
                     }
                 }
                 break;
@@ -94,7 +93,7 @@ public class PlayerAccessibility extends AccessibilityService {
                 if ((source = getSourceFromEvent(event, "playpause", "android.widget.ImageButton")) != null) {
                     mPlaying = !mPlaying;
                     Logger.v("Play/Pause button clicked, mPlaying " + mPlaying);
-                    sendCommand(mPlaying ? "resume" : "pause");
+                    sendCommand(mPlaying ? OP.OP_RESUME : OP.OP_PAUSE);
                 }
                 break;
         }
@@ -132,9 +131,9 @@ public class PlayerAccessibility extends AccessibilityService {
         if (!mInMXPLayer) {
             Logger.v("In MX Player.");
             mInMXPLayer = true;
-            sendCommand("show_all");
+            sendCommand(OP.OP_SHOW_ALL);
             if (mPlaying) {
-                sendCommand("resume");
+                sendCommand(OP.OP_RESUME);
             }
         }
     }
@@ -142,17 +141,17 @@ public class PlayerAccessibility extends AccessibilityService {
     private void pause() {
         Logger.v("Not in MX Player.");
         mInMXPLayer = false;
-        sendCommand("hide_all");
+        sendCommand(OP.OP_HIDE_ALL);
         if (mPlaying) {
-            sendCommand("pause");
+            sendCommand(OP.OP_PAUSE);
         }
     }
 
-    private void sendCommand(String op) {
+    private void sendCommand(int op) {
         sendCommand(op, null);
     }
 
-    private void sendCommand(String op, ContentValues values) {
+    private void sendCommand(int op, ContentValues values) {
         getContentResolver().update(Uri.parse("content://li.lingfeng.mxdanmaku.MainController/" + op), values, null, null);
     }
 
