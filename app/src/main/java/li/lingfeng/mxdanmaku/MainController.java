@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
+import android.view.View;
 import android.view.WindowManager;
 
 import li.lingfeng.mxdanmaku.util.Logger;
@@ -18,11 +19,12 @@ public class MainController extends ContentProvider {
     private WindowManager mWindowManager;
     private MainView mMainView;
     private ControlView mControlView;
+    private boolean mMainViewVisible;
+    private boolean mControlViewVisible;
 
     @Override
     public boolean onCreate() {
         Logger.d("MainController onCreate.");
-        createViews();
         return true;
     }
 
@@ -63,7 +65,49 @@ public class MainController extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        Logger.d("update");
+        String op = uri.getLastPathSegment();
+        Logger.v("MainController update op " + op + ", " + values);
+        if (op.equals("create")) {
+            String filePath = values.getAsString("file_path");
+            int videoDuration = values.getAsInteger("video_duration");
+            if (mMainView == null) {
+                createViews();
+            }
+            mControlView.resetFileInfo(filePath, videoDuration);
+            return 0;
+        } else if (mMainView == null) {
+            return 0;
+        }
+
+        if (op.equals("show_control")) {
+            mControlView.setVisibility(View.VISIBLE);
+        } else if (op.equals("hide_control")) {
+            mControlView.setVisibility(View.GONE);
+        } else if (op.equals("show_all")) {
+            Logger.d("mMainView show_all mMainViewVisible " + mMainViewVisible);
+            mMainView.setVisibility(mMainViewVisible ? View.VISIBLE : View.GONE);
+            mControlView.setVisibility(mControlViewVisible ? View.VISIBLE : View.GONE);
+        } else if (op.equals("hide_all")) {
+            Logger.d("mMainView hide_all");
+            mMainViewVisible = mMainView.getVisibility() == View.VISIBLE;
+            mControlViewVisible = mControlView.getVisibility() == View.VISIBLE;
+            mMainView.setVisibility(View.GONE);
+            mControlView.setVisibility(View.GONE);
+        } else if (op.equals("seek_to")) {
+            int seconds = values.getAsInteger("seconds");
+            mMainView.seekTo(seconds);
+        } else if (op.equals("resume")) {
+            mMainView.resumeDanmaku();
+        } else if (op.equals("pause")) {
+            mMainView.pauseDanmaku();
+        } else if (op.equals("destroy")) {
+            mWindowManager.removeView(mMainView);
+            mWindowManager.removeView(mControlView);
+            mMainView = null;
+            mControlView = null;
+        } else {
+            Logger.e("Unknown op " + op);
+        }
         return 0;
     }
 

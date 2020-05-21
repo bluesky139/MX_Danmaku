@@ -45,9 +45,11 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
     private static final int STATE_RETRIEVING_COMMENTS = 3;
     private static final SparseArray<String> sStateStrings = Utils.clsIntFieldsToStrings(ControlView.class, "STATE_");
 
+    private String mFilePath;
+    private int mVideoDuration;
+
     private ImageButton mShowHideButton;
     private boolean mDanmakuShown = false;
-    //private TextView mStatusView;
     private MainView mMainView;
     private AlertDialog mTitleSearchDialog;
     private ControlPresenter mPresenter = new ControlPresenter();
@@ -58,6 +60,7 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
             Logger.d("Change state to " + sStateStrings.get(msg.what));
             switch (msg.what) {
                 case STATE_DANMAKU_HIDDEN:
+                    danmakuHidden();
                     break;
                 case STATE_PREPARE_FILE_INFO:
                     prepareFileInfo();
@@ -81,32 +84,25 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
                 mShowHideButton.setImageResource(R.drawable.danmaku_shown_button);
                 setState(STATE_PREPARE_FILE_INFO);
             } else {
-                mDanmakuShown = false;
-                mShowHideButton.setImageResource(R.drawable.danmaku_hidden_button);
+                setState(STATE_DANMAKU_HIDDEN);
             }
         });
-
-
-
-        //mStatusView = viewGroup.findViewById(R.id.status_view);
         mPresenter.attachView(this);
-        /*mStatusView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Logger.d("real click");
-                String hash = HashUtils.hashFileHead(context, Uri.parse("file:///sdcard/みなみけ ただいま (Creditless OP) BDrip x264-ank [XV"), 16 * 1024 * 1024);
-                Logger.d("hash " + hash);
-                //
-                //mPresenter.matchDanmaku("みなみけ ただいま (Creditless OP) BDrip x264-ank [XVID 720p]",
-                //        "658d05841b9476ccc7420b3f0bb21c3b", 24238942, 92);
-            }
-        });*/
+    }
+
+    public void resetFileInfo(String filePath, int videoDuration) {
+        mFilePath = filePath;
+        mVideoDuration = videoDuration;
+    }
+
+    private void danmakuHidden() {
+        mDanmakuShown = false;
+        mShowHideButton.setImageResource(R.drawable.danmaku_hidden_button);
+        mMainView.stopDanmaku();
     }
 
     private void prepareFileInfo() {
-        //Uri uri = Uri.parse("http://172.18.0.4/sv_download/%e3%81%bf%e3%81%aa%e3%81%bf%e3%81%91%20%e3%81%9f%e3%81%a0%e3%81%84%e3%81%be%20(Creditless%20OP)%20BDrip%20x264-ank%20%5bXVID%20720p%5d.avi");
-        Uri uri = Uri.parse("file:///sdcard/みなみけ ただいま (Creditless OP) BDrip x264-ank [XV");
-        int videoDuration = 92;
+        Uri uri = Uri.parse(mFilePath);
         String _fileName = uri.getLastPathSegment();
         _fileName = FilenameUtils.removeExtension(_fileName);
         if (NumberUtils.isParsable(_fileName)) {
@@ -115,17 +111,16 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
         }
         String fileName = _fileName;
         mMainView.appendStatusLog("FileName: " + fileName);
-        mMainView.appendStatusLog("VideoDuration: " + videoDuration);
+        mMainView.appendStatusLog("VideoDuration: " + mVideoDuration);
 
         HashUtils.hashFileHeadAsync(getContext(), uri, 16 * 1024 * 1024, (hash, fileSize) -> {
             if (hash == null) {
                 mMainView.appendStatusError("Error to get file hash.");
                 setState(STATE_DANMAKU_HIDDEN);
             } else {
-                hash = "658d05841b9476ccc7420b3f0bb21c3c"; // for test
                 mMainView.appendStatusLog("FileHash: " + hash);
                 mMainView.appendStatusLog("FileSize: " + fileSize);
-                mPresenter.matchDanmaku(fileName, hash, fileSize, videoDuration);
+                mPresenter.matchDanmaku(fileName, hash, fileSize, mVideoDuration);
                 setState(STATE_DANMAKU_MATCHING);
             }
         });

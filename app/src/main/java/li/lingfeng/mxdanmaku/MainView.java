@@ -42,6 +42,7 @@ public class MainView extends RelativeLayout {
     private TextView mStatusView;
     private DanmakuContext mDanmakuContext;
     private BaseDanmakuParser mParser;
+    private int mSecondsToSeek = 0;
 
     public MainView(Context context) {
         super(context);
@@ -85,7 +86,8 @@ public class MainView extends RelativeLayout {
 
                 @Override
                 public void prepared() {
-                    mDanmakuView.start();
+                    Logger.v("Start from " + mSecondsToSeek + "s.");
+                    mDanmakuView.start(mSecondsToSeek * 1000L);
                 }
             });
             mDanmakuView.prepare(mParser, mDanmakuContext);
@@ -158,6 +160,26 @@ public class MainView extends RelativeLayout {
         spannableStringBuilder.append("图文混排");
         spannableStringBuilder.setSpan(new BackgroundColorSpan(Color.parseColor("#8A2233B1")), 0, spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         return spannableStringBuilder;
+    }
+
+    public void seekTo(int seconds) {
+        mSecondsToSeek = seconds;
+        if (mDanmakuView.isPrepared() && Math.abs(mDanmakuView.getCurrentTime() - seconds * 1000L) > 2000L) {
+            Logger.v("Seek once to " + seconds + "s");
+            mDanmakuView.seekTo(seconds * 1000L);
+        }
+    }
+
+    public void resumeDanmaku() {
+        mDanmakuView.resume();
+    }
+
+    public void pauseDanmaku() {
+        mDanmakuView.pause();
+    }
+
+    public void stopDanmaku() {
+        mDanmakuView.stop();
     }
 
     public void appendStatusLog(String msg) {

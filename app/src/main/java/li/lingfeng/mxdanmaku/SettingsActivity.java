@@ -120,8 +120,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
-
-        getContentResolver().update(Uri.parse("content://li.lingfeng.mxdanmaku.MainController"), null, null, null);
     }
 
     /**
