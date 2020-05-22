@@ -14,9 +14,4 @@
         android:title="@string/pref_header_ltsystem"
         android:summary="@string/pref_header_ltsystem_summary" />
 
-    <header
-        android:fragment="li.lingfeng.mxdanmaku.SettingsActivity$DataSyncPreferenceFragment"
-        android:icon="@drawable/ic_sync_black_24dp"
-        android:title="@string/pref_header_data_sync" />
-
 </preference-headers>
