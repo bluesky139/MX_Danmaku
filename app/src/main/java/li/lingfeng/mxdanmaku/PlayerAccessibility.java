@@ -36,15 +36,15 @@ public class PlayerAccessibility extends AccessibilityService {
         switch (eventType) {
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
                 if (isMXPlayer(event)) {
-                    if (event.getText().contains("Do you wish to resume from where you stopped?")
-                            || event.getText().contains("您希望从上次停止的位置继续吗？")) {
-                        mFilePath = IntentRedirector.popFilePath();
-                        mInMXPLayer = true;
-                        mPlaying = true;
-                        return;
-                    }
                     String className = event.getClassName().toString();
                     if ("com.mxtech.videoplayer.ActivityScreen".equals(className) || "com.mxtech.videoplayer.ad.ActivityScreen".equals(className)) {
+                        String newPath = IntentRedirector.popFilePath();
+                        if (newPath != null) {
+                            sendCommand(OP.OP_DESTROY); // Destroy last.
+                            mFilePath = newPath;
+                            mInMXPLayer = true;
+                            mPlaying = true;
+                        }
                         resumeIfNot();
                         return;
                     }

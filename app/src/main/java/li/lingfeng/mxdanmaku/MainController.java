@@ -29,11 +29,11 @@ public class MainController extends ContentProvider {
     public boolean onCreate() {
         Logger.d("MainController onCreate.");
         mHandler = new OpHandler();
+        mWindowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         return true;
     }
 
     private void createViews() {
-        mWindowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         createMainView();
         createControlView();
     }
