@@ -12,6 +12,8 @@
     <string name="pref_accessibility_service_permission_summary">Accessibility service is needed to get MX Player\'s state, video duration, pause button click, etc</string>
     <string name="pref_accessibility_intent_redirector">Enable intent redirector</string>
     <string name="pref_accessibility_intent_redirector_summary">Enable this and choose \"MX Danmaku\" when open video file from file explorer, we need to know file name and calculate file hash to match danmaku (service provided by DanDanPlay), you\'ll be redirect to MX Player instatly</string>
+    <string name="pref_accessibility_mxplayer_interface_auto_hide">MX Player interface auto hide</string>
+    <string name="pref_accessibility_mxplayer_interface_auto_hide_summary">In MX Player settings -> Player -> Interface -> Controls -> Interface auto hide, this seconds must not too small, or danmaku can\'t be create/sync correctly\n4s or higher is advised</string>
 
     <string name="pref_header_ltsystem">LTweaksSystem mode</string>
     <string name="pref_header_ltsystem_summary">For advanced users</string>

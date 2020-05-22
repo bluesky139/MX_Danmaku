@@ -6,4 +6,8 @@
         android:title="@string/pref_accessibility_overlay_permission"
         android:summary="@string/pref_accessibility_overlay_permission_summary" />
 
+    <Preference
+        android:title="@string/pref_accessibility_mxplayer_interface_auto_hide"
+        android:summary="@string/pref_accessibility_mxplayer_interface_auto_hide_summary" />
+
 </PreferenceScreen>
