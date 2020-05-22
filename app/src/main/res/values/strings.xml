@@ -12,6 +12,9 @@
     <string name="pref_accessibility_intent_redirector">Enable intent redirector</string>
     <string name="pref_accessibility_intent_redirector_summary">Enable this and choose \"MX Danmaku\" when open video file from file explorer, we need to know file name and calculate file hash to match danmaku (service provided by DanDanPlay), you\'ll be redirect to MX Player instatly</string>
 
+    <string name="pref_header_ltsystem">LTweaksSystem mode</string>
+    <string name="pref_header_ltsystem_summary">For advanced users</string>
+
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
 

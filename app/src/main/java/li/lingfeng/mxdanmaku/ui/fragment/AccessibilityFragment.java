@@ -5,9 +5,7 @@ import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -20,10 +18,9 @@ import li.lingfeng.mxdanmaku.PlayerAccessibility;
 import li.lingfeng.mxdanmaku.R;
 import li.lingfeng.mxdanmaku.util.ComponentUtils;
 
-public class AccessibilityFragment extends PreferenceFragment {
+public class AccessibilityFragment extends ModePreference {
 
     private SwitchPreference mStoragePreference;
-    private SwitchPreference mOverlayPreference;
     private SwitchPreference mServicePreference;
     private SwitchPreference mIntentRedirectorPreference;
 
@@ -42,7 +39,6 @@ public class AccessibilityFragment extends PreferenceFragment {
         super.onResume();
         refreshStoragePreference();
         refreshOverlayPreference();
-        refreshServicePreference();
         refreshServicePreference();
         refreshIntentRedirectorPreference();
     }
@@ -73,23 +69,6 @@ public class AccessibilityFragment extends PreferenceFragment {
         if (requestCode == 100) {
             refreshStoragePreference();
         }
-    }
-
-    private void initOverlayPreference() {
-        mOverlayPreference = (SwitchPreference) findPreference("key_accessibility_overlay_permission");
-        refreshOverlayPreference();
-        mOverlayPreference.setOnPreferenceChangeListener((preference1, checked) -> {
-            if ((boolean) checked) {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getContext().getPackageName()));
-                startActivity(intent);
-                return true;
-            }
-            return false;
-        });
-    }
-
-    private void refreshOverlayPreference() {
-        mOverlayPreference.setChecked(Settings.canDrawOverlays(getActivity()));
     }
 
     private void initServicePreference() {

@@ -9,9 +9,10 @@
         android:summary="@string/pref_header_accessibility_summary" />
 
     <header
-        android:fragment="li.lingfeng.mxdanmaku.SettingsActivity$NotificationPreferenceFragment"
+        android:fragment="li.lingfeng.mxdanmaku.ui.fragment.LTSystemPreference"
         android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="@string/pref_header_notifications" />
+        android:title="@string/pref_header_ltsystem"
+        android:summary="@string/pref_header_ltsystem_summary" />
 
     <header
         android:fragment="li.lingfeng.mxdanmaku.SettingsActivity$DataSyncPreferenceFragment"

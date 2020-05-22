@@ -1,0 +1,9 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="key_mode_overlay_permission"
+        android:title="@string/pref_accessibility_overlay_permission"
+        android:summary="@string/pref_accessibility_overlay_permission_summary" />
+
+</PreferenceScreen>
