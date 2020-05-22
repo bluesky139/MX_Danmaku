@@ -155,10 +155,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      * Make sure to deny any unknown fragments here.
      */
     protected boolean isValidFragment(String fragmentName) {
-        return PreferenceFragment.class.getName().equals(fragmentName)
-                || GeneralPreferenceFragment.class.getName().equals(fragmentName)
-                || DataSyncPreferenceFragment.class.getName().equals(fragmentName)
-                || NotificationPreferenceFragment.class.getName().equals(fragmentName);
+        return fragmentName.startsWith("li.lingfeng.mxdanmaku.ui.fragment");
     }
 
     /**
@@ -170,7 +167,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_general);
+            addPreferencesFromResource(R.xml.pref_accessibility);
             setHasOptionsMenu(true);
 
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences

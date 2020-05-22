@@ -1,7 +1,16 @@
 <resources>
     <string name="app_name">MX Danmaku</string>
 
-    <!-- Strings related to Settings -->
+    <string name="pref_header_accessibility">Accessibility service mode</string>
+    <string name="pref_header_accessibility_summary">For most users</string>
+    <string name="pref_accessibility_storage_permission">Grant storage permission</string>
+    <string name="pref_accessibility_storage_permission_summary">Storage permission is needed to read video file from your phone, ignore this if you don\'t store video on your phone</string>
+    <string name="pref_accessibility_overlay_permission">Grant overlay permission</string>
+    <string name="pref_accessibility_overlay_permission_summary">Overlay permission is needed to display danmaku, danmaku window is on the top of player window, and follow player window\'s state to show/hide</string>
+    <string name="pref_accessibility_service_permission">Accessibility service permission</string>
+    <string name="pref_accessibility_service_permission_summary">Accessibility service is needed to get MX Player\'s state, video duration, pause button click, etc</string>
+    <string name="pref_accessibility_intent_redirector">Enable intent redirector</string>
+    <string name="pref_accessibility_intent_redirector_summary">Enable this and choose \"MX Danmaku\" when open video file from file explorer, we need to know file name and calculate file hash to match danmaku (service provided by DanDanPlay), you\'ll be redirect to MX Player instatly</string>
 
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>

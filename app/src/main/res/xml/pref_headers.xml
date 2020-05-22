@@ -3,9 +3,10 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="li.lingfeng.mxdanmaku.SettingsActivity$GeneralPreferenceFragment"
+        android:fragment="li.lingfeng.mxdanmaku.ui.fragment.AccessibilityFragment"
         android:icon="@drawable/ic_info_black_24dp"
-        android:title="@string/pref_header_general" />
+        android:title="@string/pref_header_accessibility"
+        android:summary="@string/pref_header_accessibility_summary" />
 
     <header
         android:fragment="li.lingfeng.mxdanmaku.SettingsActivity$NotificationPreferenceFragment"

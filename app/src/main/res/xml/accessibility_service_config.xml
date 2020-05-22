@@ -2,7 +2,7 @@
     android:description="@string/app_name"
     android:accessibilityEventTypes="typeAllMask"
     android:accessibilityFlags="flagDefault|flagRetrieveInteractiveWindows|flagIncludeNotImportantViews|flagReportViewIds|flagRequestTouchExplorationMode"
-    android:accessibilityFeedbackType="feedbackAllMask"
+    android:accessibilityFeedbackType="feedbackVisual"
     android:canRetrieveWindowContent="true"
-    android:settingsActivity="com.example.android.accessibility.ServiceSettingsActivity"
+    android:settingsActivity="li.lingfeng.mxdanmaku.SettingsActivity"
     />

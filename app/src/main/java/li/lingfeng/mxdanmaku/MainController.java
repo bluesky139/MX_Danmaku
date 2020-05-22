@@ -89,6 +89,9 @@ public class MainController extends ContentProvider {
                 }
                 mControlView.reset(filePath, videoDuration);
                 mMainView.setVisibility(View.VISIBLE);
+                mControlView.setVisibility(View.VISIBLE);
+                mMainViewVisible = true;
+                mControlViewVisible = true;
                 return;
             } else if (mMainView == null) {
                 return;

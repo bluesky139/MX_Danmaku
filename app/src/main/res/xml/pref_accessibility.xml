@@ -1,0 +1,27 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="key_accessibility_storage_permission"
+        android:title="@string/pref_accessibility_storage_permission"
+        android:summary="@string/pref_accessibility_storage_permission_summary" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="key_accessibility_overlay_permission"
+        android:title="@string/pref_accessibility_overlay_permission"
+        android:summary="@string/pref_accessibility_overlay_permission_summary" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="key_accessibility_service_permission"
+        android:title="@string/pref_accessibility_service_permission"
+        android:summary="@string/pref_accessibility_service_permission_summary" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="key_accessibility_intent_redirector"
+        android:title="@string/pref_accessibility_intent_redirector"
+        android:summary="@string/pref_accessibility_intent_redirector_summary" />
+
+</PreferenceScreen>

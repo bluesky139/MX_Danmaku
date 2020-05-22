@@ -43,6 +43,7 @@
         <activity
             android:name=".IntentRedirector"
             android:theme="@style/android:Theme.Material.Dialog"
+            android:enabled="false"
             android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
