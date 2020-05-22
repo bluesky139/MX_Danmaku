@@ -87,7 +87,8 @@ public class MainController extends ContentProvider {
                 if (mMainView == null) {
                     createViews();
                 }
-                mControlView.resetFileInfo(filePath, videoDuration);
+                mControlView.reset(filePath, videoDuration);
+                mMainView.setVisibility(View.VISIBLE);
                 return;
             } else if (mMainView == null) {
                 return;

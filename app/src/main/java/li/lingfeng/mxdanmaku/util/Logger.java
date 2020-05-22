@@ -1,5 +1,6 @@
 package li.lingfeng.mxdanmaku.util;
 
+import android.content.Intent;
 import android.util.Log;
 
 import java.lang.reflect.InvocationTargetException;
@@ -57,5 +58,24 @@ public class Logger {
             e = ((InvocationTargetException) e).getTargetException();
         }
         Log.e(TAG, Log.getStackTraceString(e));
+    }
+
+    public static void intent(Intent intent) {
+        if (intent == null) {
+            Logger.d(" intent is null.");
+            return;
+        }
+        Logger.d(" intent action: " + intent.getAction());
+        Logger.d(" intent package: " + intent.getPackage());
+        Logger.d(" intent component: " + (intent.getComponent() != null ? intent.getComponent().toShortString() : ""));
+        Logger.d(" intent type: " + intent.getType());
+        Logger.d(" intent flag: 0x" + Integer.toHexString(intent.getFlags()));
+        Logger.d(" intent data: " + intent.getData());
+        if (intent.getExtras() != null) {
+            for (String key : intent.getExtras().keySet()) {
+                Object value = intent.getExtras().get(key);
+                Logger.d(" intent extra: " + key + " -> " + value + " (" + value.getClass().getName() + ")");
+            }
+        }
     }
 }

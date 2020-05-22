@@ -90,9 +90,10 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
         mPresenter.attachView(this);
     }
 
-    public void resetFileInfo(String filePath, int videoDuration) {
+    public void reset(String filePath, int videoDuration) {
         mFilePath = filePath;
         mVideoDuration = videoDuration;
+        setState(STATE_DANMAKU_HIDDEN);
     }
 
     private void danmakuHidden() {

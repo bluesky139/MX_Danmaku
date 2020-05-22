@@ -1,9 +1,7 @@
 package li.lingfeng.mxdanmaku;
 
 import android.accessibilityservice.AccessibilityService;
-import android.content.ComponentName;
 import android.content.ContentValues;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -13,9 +11,12 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 
 import li.lingfeng.mxdanmaku.util.Logger;
+import li.lingfeng.mxdanmaku.util.PackageUtils;
+import li.lingfeng.mxdanmaku.util.Utils;
 
 public class PlayerAccessibility extends AccessibilityService {
 
+    private String mFilePath;
     private boolean mPlaying;
     private boolean mInMXPLayer = false;
     private boolean mControlShown = false;
@@ -34,11 +35,9 @@ public class PlayerAccessibility extends AccessibilityService {
         switch (eventType) {
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
                 if (isMXPlayer(event)) {
-                    if (event.getText().contains("Do you wish to resume from where you stopped?")) {
-                        ContentValues values = new ContentValues(2);
-                        values.put("file_path", "file:///sdcard/みなみけ ただいま (Creditless OP) BDrip x264-ank [XV");
-                        values.put("video_duration", 92);
-                        sendCommand(OP.OP_CREATE, values);
+                    if (event.getText().contains("Do you wish to resume from where you stopped?")
+                            || event.getText().contains("您希望从上次停止的位置继续吗？")) {
+                        mFilePath = IntentRedirector.popFilePath();
                         mInMXPLayer = true;
                         mPlaying = true;
                         return;
@@ -58,22 +57,16 @@ public class PlayerAccessibility extends AccessibilityService {
                     return;
                 }
                 if ((source = getSourceFromEvent(event, "posText", "android.widget.TextView")) != null) {
+                    createIfNot(event);
+                    resumeIfNot();
                     String pos = source.getText().toString();
                     Logger.v("Update pos " + pos);
-                    String[] strings = StringUtils.split(pos, ':');
-                    int seconds = Integer.parseInt(strings[strings.length - 1]) + Integer.parseInt(strings[strings.length - 2]) * 60
-                            + (strings.length == 3 ? Integer.parseInt(strings[0]) * 3600 : 0);
                     ContentValues values = new ContentValues(1);
-                    values.put("seconds", seconds);
+                    values.put("seconds", Utils.stringTimeToSeconds(pos));
                     sendCommand(OP.OP_SEEK_TO, values);
-                    resumeIfNot();
                 } else {
-                    AccessibilityNodeInfo rootNode = getRootInActiveWindow();
-                    if (rootNode == null) {
-                        return;
-                    }
-                    List<AccessibilityNodeInfo> nodes = rootNode.findAccessibilityNodeInfosByViewId(event.getPackageName() + ":id/posText");
-                    if (nodes.size() > 0 && nodes.get(0).isVisibleToUser()) {
+                    AccessibilityNodeInfo node = getNode(event, "posText");
+                    if (node != null && node.isVisibleToUser()) {
                         if (!mControlShown) {
                             Logger.v("Show danmaku control button.");
                             mControlShown = true;
@@ -100,17 +93,11 @@ public class PlayerAccessibility extends AccessibilityService {
     }
 
     private boolean isMXPlayer(AccessibilityEvent event) {
-        CharSequence packageName = event.getPackageName();
-        return "com.mxtech.videoplayer.pro".equals(packageName) || "com.mxtech.videoplayer.ad".equals(packageName);
+        return PackageNames.isMXPlayer(event.getPackageName());
     }
 
     private boolean isActivity(AccessibilityEvent event) {
-        ComponentName componentName = new ComponentName(event.getPackageName().toString(), event.getClassName().toString());
-        try {
-            return getPackageManager().getActivityInfo(componentName, 0) != null;
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
-        }
+        return PackageUtils.isActivity(this, event.getPackageName(), event.getClassName());
     }
 
     private AccessibilityNodeInfo getSourceFromEvent(AccessibilityEvent event, String resName, String resType) {
@@ -125,6 +112,32 @@ public class PlayerAccessibility extends AccessibilityService {
         String name = source.getViewIdResourceName();
         name = StringUtils.substringAfterLast(name, "/");
         return resName.equals(name) ? source : null;
+    }
+
+    private AccessibilityNodeInfo getNode(AccessibilityEvent event, String resName) {
+        AccessibilityNodeInfo rootNode = getRootInActiveWindow();
+        if (rootNode == null) {
+            return null;
+        }
+        List<AccessibilityNodeInfo> nodes = rootNode.findAccessibilityNodeInfosByViewId(event.getPackageName() + ":id/" + resName);
+        return nodes.size() > 0 ? nodes.get(0) : null;
+    }
+
+    private void createIfNot(AccessibilityEvent event) {
+        if (mFilePath != null) {
+            AccessibilityNodeInfo node = getNode(event, "durationText");
+            if (node != null) {
+                String _duration = node.getText().toString();
+                int duration = Utils.stringTimeToSeconds(_duration);
+                if (duration > 0) {
+                    ContentValues values = new ContentValues(2);
+                    values.put("file_path", mFilePath);
+                    values.put("video_duration", duration);
+                    sendCommand(OP.OP_CREATE, values);
+                    mFilePath = null;
+                }
+            }
+        }
     }
 
     private void resumeIfNot() {
