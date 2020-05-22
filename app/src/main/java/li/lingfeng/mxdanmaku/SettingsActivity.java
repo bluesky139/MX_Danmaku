@@ -2,11 +2,15 @@ package li.lingfeng.mxdanmaku;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.support.v7.app.ActionBar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import java.util.List;
 
@@ -72,5 +76,25 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      */
     protected boolean isValidFragment(String fragmentName) {
         return fragmentName.startsWith("li.lingfeng.mxdanmaku.ui.fragment");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.menu_github:
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://github.com/bluesky139/MX_Danmaku"));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                break;
+        }
+        return true;
     }
 }

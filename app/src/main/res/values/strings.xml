@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">MX Danmaku</string>
+    <string name="menu_github">Github</string>
 
     <string name="pref_header_accessibility">Accessibility service mode</string>
     <string name="pref_header_accessibility_summary">For most users</string>
