@@ -12,6 +12,8 @@
 
 * 另一种是配合 [LTweaksSystem](https://github.com/bluesky139/LTweaksSystem) hook 播放器的状态来实现，可以得到更好的效果。
 
-## 已知问题
+## 其它说明
 
-* 
+* 第一种版本的实现主要是为了让普通用户也能使用，AccessibilityService 的能力十分有限，不过基本上也没什么问题，我在原生 Android 和类原生 Android 上测试过，使用请务必查看该 app 内的详细说明。
+
+* 我自己主要在用第二种版本，还是 hook 来得更实在，有兴趣的可以参考[我在 LTweaksSystem 里的实现](https://github.com/bluesky139/LTweaksSystem/blob/master/app/src/main/java/li/lingfeng/ltsystem/tweaks/entertainment/MXPlayerDanmaku.java)，兴许可以出个 Xposed 版本。再配合[高亮最后访问的文件](https://github.com/bluesky139/LTweaksSystem/blob/master/app/src/main/java/li/lingfeng/ltsystem/tweaks/system/SolidExplorerHighlightVisitedFile.java)，这样也知道上次看到哪一集了，真是完美。
