@@ -2,6 +2,7 @@ package li.lingfeng.mxdanmaku;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -171,5 +172,11 @@ public class PlayerAccessibility extends AccessibilityService {
     @Override
     public void onInterrupt() {
         Logger.w("PlayerAccessibility onInterrupt");
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        sendCommand(OP.OP_DESTROY);
+        return super.onUnbind(intent);
     }
 }
