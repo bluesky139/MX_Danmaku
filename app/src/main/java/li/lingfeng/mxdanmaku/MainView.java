@@ -35,6 +35,7 @@ public class MainView extends RelativeLayout {
     private Runnable mHideStatusRunnable = () -> {
         mStatusView.setVisibility(View.GONE);
     };
+    private boolean mPauseAtStart = false;
 
     public MainView(Context context) {
         super(context);
@@ -85,6 +86,11 @@ public class MainView extends RelativeLayout {
                 public void prepared() {
                     Logger.v("Start from " + mSecondsToSeek + "s.");
                     mDanmakuView.start(mSecondsToSeek * 1000L);
+                    if (mPauseAtStart) {
+                        mHandler.post(() -> {
+                            mDanmakuView.pause();
+                        });
+                    }
                 }
             });
             mDanmakuView.prepare(mParser, mDanmakuContext);
@@ -115,6 +121,7 @@ public class MainView extends RelativeLayout {
     public void resumeDanmaku() {
         mDanmakuView.resume();
         mDanmakuView.setVisibility(View.VISIBLE);
+        mPauseAtStart = false;
     }
 
     public void pauseDanmaku() {
@@ -126,6 +133,7 @@ public class MainView extends RelativeLayout {
         if (hide) {
             mDanmakuView.setVisibility(View.GONE);
         }
+        mPauseAtStart = true;
     }
 
     public void stopDanmaku() {
