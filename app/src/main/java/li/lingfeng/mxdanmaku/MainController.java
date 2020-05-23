@@ -129,6 +129,7 @@ public class MainController extends ContentProvider {
                 case OP.OP_DESTROY:
                     if (mMainView != null) {
                         mMainView.stopDanmaku();
+                        mControlView.destroy();
                         mWindowManager.removeView(mMainView);
                         mWindowManager.removeView(mControlView);
                         mMainView = null;

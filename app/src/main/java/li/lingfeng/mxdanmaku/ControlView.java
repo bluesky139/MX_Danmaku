@@ -277,4 +277,8 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
     private void resumeDanmaku() {
         mMainView.resumeDanmaku();
     }
+
+    public void destroy() {
+        mPresenter.detachView();
+    }
 }

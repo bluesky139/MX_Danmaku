@@ -20,7 +20,6 @@ public class ControlPresenter extends BasePresenter<ControlContact.View> impleme
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(matchBean -> {
                     Logger.d("Got matchBean " + matchBean);
-                    Logger.d("thread " + Thread.currentThread());
                     mView.onDanmakuMatched(matchBean);
                 }, err -> {
                     Logger.e("Error " + err);
