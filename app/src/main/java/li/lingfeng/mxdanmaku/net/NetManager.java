@@ -5,21 +5,21 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RetrofitManager {
+public class NetManager {
 
-    private static RetrofitManager _instance;
-    public static RetrofitManager instance() {
+    private static NetManager _instance;
+    public static NetManager instance() {
         if (_instance == null) {
-            _instance = new RetrofitManager();
+            _instance = new NetManager();
         }
         return _instance;
     }
 
     private OkHttpClient mHttpClient;
 
-    public DanDanRetrofitService getService() {
+    public RetrofitService getRetrofitService() {
         Retrofit retrofit = getRetrofit();
-        return retrofit.create(DanDanRetrofitService.class);
+        return retrofit.create(RetrofitService.class);
     }
 
     private Retrofit getRetrofit() {

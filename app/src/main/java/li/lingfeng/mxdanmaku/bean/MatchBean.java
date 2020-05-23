@@ -2,7 +2,7 @@ package li.lingfeng.mxdanmaku.bean;
 
 import java.util.List;
 
-public class DanDanMatchBean {
+public class MatchBean {
 
     public boolean isMatched;
     public List<Match> matches;
@@ -30,10 +30,10 @@ public class DanDanMatchBean {
     @Override
     public String toString() {
         if (errorCode == 0) {
-            return "DanDanMatchBean@" + hashCode() + " isMatched " + isMatched + ", matches " + matches.size()
+            return "MatchBean@" + hashCode() + " isMatched " + isMatched + ", matches " + matches.size()
                     + (matches.size() > 0 ? "(" + matches.get(0) + ")" : "");
         } else {
-            return "DanDanMatchBean@" + hashCode() + " errorCode " + errorCode + ", errorMessage " + errorMessage;
+            return "MatchBean@" + hashCode() + " errorCode " + errorCode + ", errorMessage " + errorMessage;
         }
     }
 }

@@ -2,7 +2,7 @@ package li.lingfeng.mxdanmaku.bean;
 
 import java.util.List;
 
-public class DanDanCommentBean {
+public class CommentBean {
 
     public int count;
     public List<Comment> comments;
@@ -11,7 +11,7 @@ public class DanDanCommentBean {
 
     @Override
     public String toString() {
-        return "DanDanCommentBean@" + hashCode() + " count " + count;
+        return "CommentBean@" + hashCode() + " count " + count;
     }
 
     public static class Comment {

@@ -11,9 +11,9 @@ import android.widget.TextView;
 import java.util.HashMap;
 import java.util.List;
 
-import li.lingfeng.mxdanmaku.bean.DanDanCommentBean.Comment;
+import li.lingfeng.mxdanmaku.bean.CommentBean.Comment;
 import li.lingfeng.mxdanmaku.presenter.CommentBeanSource;
-import li.lingfeng.mxdanmaku.presenter.DanDanDanmakuParser;
+import li.lingfeng.mxdanmaku.presenter.DanmakuParser;
 import li.lingfeng.mxdanmaku.util.Logger;
 import master.flame.danmaku.danmaku.model.BaseDanmaku;
 import master.flame.danmaku.danmaku.model.DanmakuTimer;
@@ -95,7 +95,7 @@ public class MainView extends RelativeLayout {
 
     private BaseDanmakuParser createParser(List<Comment> comments) {
         CommentBeanSource dataSource = new CommentBeanSource(comments);
-        BaseDanmakuParser parser = new DanDanDanmakuParser();
+        BaseDanmakuParser parser = new DanmakuParser();
         parser.load(dataSource);
         return parser;
     }

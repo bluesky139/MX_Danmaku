@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 
-import li.lingfeng.mxdanmaku.net.RetrofitManager;
+import li.lingfeng.mxdanmaku.net.NetManager;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -24,7 +24,7 @@ public class HashUtils {
             String scheme = uri.getScheme();
             if ("http".equals(scheme) || "https".equals(scheme)) {
                 Request request = new Request.Builder().url(uri.toString()).build();
-                Response response = RetrofitManager.instance().getHttpClient().newCall(request).execute();
+                Response response = NetManager.instance().getHttpClient().newCall(request).execute();
                 if (!response.isSuccessful()) {
                     throw new IOException("http hash request response " + response.code());
                 }

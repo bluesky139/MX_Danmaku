@@ -2,17 +2,17 @@ package li.lingfeng.mxdanmaku.contact;
 
 import li.lingfeng.mxdanmaku.base.IBaseView;
 import li.lingfeng.mxdanmaku.base.IPresenter;
-import li.lingfeng.mxdanmaku.bean.DanDanCommentBean;
-import li.lingfeng.mxdanmaku.bean.DanDanMatchBean;
-import li.lingfeng.mxdanmaku.bean.DanDanSearchEpisodeBean;
+import li.lingfeng.mxdanmaku.bean.CommentBean;
+import li.lingfeng.mxdanmaku.bean.MatchBean;
+import li.lingfeng.mxdanmaku.bean.SearchEpisodeBean;
 
 public interface ControlContact {
 
     interface View extends IBaseView {
 
-        void onDanmakuMatched(DanDanMatchBean matchBean);
-        void onEpisodeSearched(DanDanSearchEpisodeBean searchEpisodeBean);
-        void onCommentsGot(DanDanCommentBean commentBean);
+        void onDanmakuMatched(MatchBean matchBean);
+        void onEpisodeSearched(SearchEpisodeBean searchEpisodeBean);
+        void onCommentsGot(CommentBean commentBean);
     }
 
     interface Presenter extends IPresenter<View> {

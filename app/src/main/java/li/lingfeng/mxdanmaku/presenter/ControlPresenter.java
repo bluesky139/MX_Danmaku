@@ -3,9 +3,9 @@ package li.lingfeng.mxdanmaku.presenter;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import li.lingfeng.mxdanmaku.base.BasePresenter;
-import li.lingfeng.mxdanmaku.bean.DanDanCommentBean;
-import li.lingfeng.mxdanmaku.bean.DanDanMatchBean;
-import li.lingfeng.mxdanmaku.bean.DanDanSearchEpisodeBean;
+import li.lingfeng.mxdanmaku.bean.CommentBean;
+import li.lingfeng.mxdanmaku.bean.MatchBean;
+import li.lingfeng.mxdanmaku.bean.SearchEpisodeBean;
 import li.lingfeng.mxdanmaku.contact.ControlContact;
 import li.lingfeng.mxdanmaku.model.ControlModel;
 import li.lingfeng.mxdanmaku.util.Logger;
@@ -23,7 +23,7 @@ public class ControlPresenter extends BasePresenter<ControlContact.View> impleme
                     mView.onDanmakuMatched(matchBean);
                 }, err -> {
                     Logger.e("Error " + err);
-                    DanDanMatchBean matchBean = new DanDanMatchBean();
+                    MatchBean matchBean = new MatchBean();
                     matchBean.errorCode = -1;
                     matchBean.errorMessage = err.toString();
                     mView.onDanmakuMatched(matchBean);
@@ -40,7 +40,7 @@ public class ControlPresenter extends BasePresenter<ControlContact.View> impleme
                     mView.onEpisodeSearched(searchEpisodeBean);
                 }, err -> {
                     Logger.e("Error " + err);
-                    DanDanSearchEpisodeBean searchEpisodeBean = new DanDanSearchEpisodeBean();
+                    SearchEpisodeBean searchEpisodeBean = new SearchEpisodeBean();
                     searchEpisodeBean.errorCode = -1;
                     searchEpisodeBean.errorMessage = err.toString();
                     mView.onEpisodeSearched(searchEpisodeBean);
@@ -57,7 +57,7 @@ public class ControlPresenter extends BasePresenter<ControlContact.View> impleme
                     mView.onCommentsGot(commentBean);
                 }, err -> {
                     Logger.e("Error " + err);
-                    DanDanCommentBean commentBean = new DanDanCommentBean();
+                    CommentBean commentBean = new CommentBean();
                     commentBean.errorCode = -1;
                     commentBean.errorMessage = err.toString();
                     mView.onCommentsGot(commentBean);

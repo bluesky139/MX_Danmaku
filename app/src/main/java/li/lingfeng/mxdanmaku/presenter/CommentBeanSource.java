@@ -2,7 +2,7 @@ package li.lingfeng.mxdanmaku.presenter;
 
 import java.util.List;
 
-import li.lingfeng.mxdanmaku.bean.DanDanCommentBean.Comment;
+import li.lingfeng.mxdanmaku.bean.CommentBean.Comment;
 import master.flame.danmaku.danmaku.parser.IDataSource;
 
 public class CommentBeanSource implements IDataSource<List<Comment>> {

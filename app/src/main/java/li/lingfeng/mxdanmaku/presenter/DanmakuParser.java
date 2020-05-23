@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
-import li.lingfeng.mxdanmaku.bean.DanDanCommentBean.Comment;
+import li.lingfeng.mxdanmaku.bean.CommentBean.Comment;
 import li.lingfeng.mxdanmaku.util.Logger;
 import master.flame.danmaku.danmaku.model.BaseDanmaku;
 import master.flame.danmaku.danmaku.model.IDanmakus;
@@ -16,7 +16,7 @@ import master.flame.danmaku.danmaku.util.DanmakuUtils;
 
 import static master.flame.danmaku.danmaku.model.IDanmakus.ST_BY_TIME;
 
-public class DanDanDanmakuParser extends BaseDanmakuParser {
+public class DanmakuParser extends BaseDanmakuParser {
     @Override
     protected IDanmakus parse() {
         Danmakus danmakus = new Danmakus(ST_BY_TIME, false, mContext.getBaseComparator());

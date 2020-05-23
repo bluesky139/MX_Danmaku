@@ -2,7 +2,7 @@ package li.lingfeng.mxdanmaku.bean;
 
 import java.util.List;
 
-public class DanDanSearchEpisodeBean {
+public class SearchEpisodeBean {
 
     public boolean hasMore;
     public List<Anime> animes;
@@ -13,9 +13,9 @@ public class DanDanSearchEpisodeBean {
     @Override
     public String toString() {
         if (errorCode == 0) {
-            return "DanDanSearchEpisodeBean@" + hashCode() + " hasMore " + hasMore + ", animes " + animes.size();
+            return "SearchEpisodeBean@" + hashCode() + " hasMore " + hasMore + ", animes " + animes.size();
         } else {
-            return "DanDanSearchEpisodeBean@" + hashCode() + " errorCode " + errorCode + ", errorMessage " + errorMessage;
+            return "SearchEpisodeBean@" + hashCode() + " errorCode " + errorCode + ", errorMessage " + errorMessage;
         }
     }
 

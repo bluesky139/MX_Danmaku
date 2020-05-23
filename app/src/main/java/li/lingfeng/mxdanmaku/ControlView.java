@@ -24,11 +24,11 @@ import org.apache.commons.lang3.math.NumberUtils;
 import java.util.Arrays;
 import java.util.List;
 
-import li.lingfeng.mxdanmaku.bean.DanDanCommentBean;
-import li.lingfeng.mxdanmaku.bean.DanDanMatchBean;
-import li.lingfeng.mxdanmaku.bean.DanDanSearchEpisodeBean;
-import li.lingfeng.mxdanmaku.bean.DanDanSearchEpisodeBean.Anime;
-import li.lingfeng.mxdanmaku.bean.DanDanSearchEpisodeBean.Episode;
+import li.lingfeng.mxdanmaku.bean.CommentBean;
+import li.lingfeng.mxdanmaku.bean.MatchBean;
+import li.lingfeng.mxdanmaku.bean.SearchEpisodeBean;
+import li.lingfeng.mxdanmaku.bean.SearchEpisodeBean.Anime;
+import li.lingfeng.mxdanmaku.bean.SearchEpisodeBean.Episode;
 import li.lingfeng.mxdanmaku.contact.ControlContact;
 import li.lingfeng.mxdanmaku.presenter.ControlPresenter;
 import li.lingfeng.mxdanmaku.ui.widget.OverlayDialog;
@@ -141,7 +141,7 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
     }
 
     @Override
-    public void onDanmakuMatched(DanDanMatchBean matchBean) {
+    public void onDanmakuMatched(MatchBean matchBean) {
         if (mState != STATE_DANMAKU_MATCHING) {
             return;
         }
@@ -155,7 +155,7 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
                 new OverlayDialog.Builder(getContext())
                         .setTitle("Select title")
                         .setItems(titles, (_dialog, which) -> {
-                            DanDanMatchBean.Match match = matchBean.matches.get(which);
+                            MatchBean.Match match = matchBean.matches.get(which);
                             mMainView.appendStatusLog("User choose " + match);
                             retrieveComments(match.episodeId);
                         })
@@ -224,7 +224,7 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
     }
 
     @Override
-    public void onEpisodeSearched(DanDanSearchEpisodeBean searchEpisodeBean) {
+    public void onEpisodeSearched(SearchEpisodeBean searchEpisodeBean) {
         if (mState != STATE_USER_SEARCH) {
             return;
         }
@@ -258,7 +258,7 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
     }
 
     @Override
-    public void onCommentsGot(DanDanCommentBean commentBean) {
+    public void onCommentsGot(CommentBean commentBean) {
         if (mState != STATE_RETRIEVING_COMMENTS) {
             return;
         }
