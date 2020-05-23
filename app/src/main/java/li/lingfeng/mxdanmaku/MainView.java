@@ -4,12 +4,14 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -42,13 +44,19 @@ public class MainView extends RelativeLayout {
     private TextView mStatusView;
     private DanmakuContext mDanmakuContext;
     private BaseDanmakuParser mParser;
+
     private int mSecondsToSeek = 0;
+    private Handler mHandler;
+    private Runnable mHideStatusRunnable = () -> {
+        mStatusView.setVisibility(View.GONE);
+    };
 
     public MainView(Context context) {
         super(context);
         ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.main_view, this);
         mDanmakuView = viewGroup.findViewById(R.id.danmaku_view);
         mStatusView = viewGroup.findViewById(R.id.status_view);
+        mHandler = new Handler();
     }
 
     public void initDanmakuView(List<Comment> comments) {
@@ -184,11 +192,18 @@ public class MainView extends RelativeLayout {
 
     public void appendStatusLog(String msg) {
         Logger.i(msg);
-        mStatusView.setText(mStatusView.getText().toString() + '\n' + msg);
+        appendOnStatus(msg);
     }
 
     public void appendStatusError(String msg) {
         Logger.e(msg);
+        appendOnStatus(msg);
+    }
+
+    private void appendOnStatus(String msg) {
         mStatusView.setText(mStatusView.getText().toString() + '\n' + msg);
+        mHandler.removeCallbacks(mHideStatusRunnable);
+        mStatusView.setVisibility(View.VISIBLE);
+        mHandler.postDelayed(mHideStatusRunnable, 4000);
     }
 }

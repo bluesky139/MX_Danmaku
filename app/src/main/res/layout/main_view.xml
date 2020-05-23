@@ -8,8 +8,10 @@
 
     <TextView
         android:id="@+id/status_view"
+        android:background="#88CCCCCC"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp"
         android:gravity="left|bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
