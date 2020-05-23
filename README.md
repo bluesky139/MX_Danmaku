@@ -2,6 +2,8 @@
 
 在 MX Player 上播放弹幕。
 
+![Screenshot](https://github.com/bluesky139/MX_Danmaku/raw/master/screenshot.jpg)
+
 ## 起因
 
 因为经常用 MX Player 播放 NAS 上的动漫，但有时又想看点弹幕，桌面端倒是有“弹弹 Play”，但它的 Android 版本始终不够理想，因此产生了为已有播放器挂上弹幕的想法。
