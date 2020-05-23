@@ -46,7 +46,7 @@ public class MainView extends RelativeLayout {
     }
 
     public void initDanmakuView(List<Comment> comments) {
-        appendStatusLog("Init danmaku view with " + comments.size() + " comments.");
+        appendStatusLog(getResources().getString(R.string.main_init_danmaku, comments.size()));
         // 设置最大显示行数
         HashMap<Integer, Integer> maxLinesPair = new HashMap<Integer, Integer>();
         maxLinesPair.put(BaseDanmaku.TYPE_SCROLL_RL, 5); // 滚动弹幕最大显示5行

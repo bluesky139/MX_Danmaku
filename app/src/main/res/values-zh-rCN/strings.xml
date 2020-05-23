@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">MX 弹幕</string>
+    <string name="menu_github">Github</string>
+
+    <string name="pref_header_accessibility">辅助功能模式</string>
+    <string name="pref_header_accessibility_summary">适用于绝大多数用户</string>
+    <string name="pref_accessibility_storage_permission">授予外部存储读取权限</string>
+    <string name="pref_accessibility_storage_permission_summary">如果你需要播放存储于手机上的视频文件，请授予此权限</string>
+    <string name="pref_accessibility_overlay_permission">授予显示在其它应用上层的权限</string>
+    <string name="pref_accessibility_overlay_permission_summary">弹幕通过此权限显示在 MX 播放器之上，根据播放器的状态来显示和隐藏</string>
+    <string name="pref_accessibility_service_permission">辅助功能权限</string>
+    <string name="pref_accessibility_service_permission_summary">辅助功能权限用来获取 MX 播放器的窗口状态、播放进度、播放暂停等操作</string>
+    <string name="pref_accessibility_intent_redirector">通过此应用来打开 MX 播放器</string>
+    <string name="pref_accessibility_intent_redirector_summary">启用此项，然后在通过文件浏览器打开视频播放器的时候，选择用\"MX 弹幕\"来打开，此应用将立刻调用 MX 播放器开始正常播放。通过此应用中转一次的目的是为了获得即将播放的视频文件路径，通过文件名和文件 hash 来匹配正常的弹幕列表（由弹弹 Play 提供）</string>
+    <string name="pref_accessibility_mxplayer_interface_auto_hide">MX 播放器界面自动隐藏</string>
+    <string name="pref_accessibility_mxplayer_interface_auto_hide_summary">在 MX 播放器设置 -> 播放器 -> 界面 -> 控制 -> 界面自动隐藏，这里的秒数不要设置得太小，否则弹幕不能正常被创建和同步\n建议 4 秒或以上</string>
+
+    <string name="pref_header_ltsystem">LTweaksSystem 模式</string>
+    <string name="pref_header_ltsystem_summary">一般用户用不到</string>
+
+    <string name="control_file_name">文件名：%1$s</string>
+    <string name="control_video_duration">视频长度：%1$d</string>
+    <string name="control_file_hash">文件 Hash：%1$s</string>
+    <string name="control_file_size">文件大小：%1$d</string>
+    <string name="control_error_to_hash_file">计算文件 hash 失败.</string>
+    <string name="control_danmaku_match_error">弹幕匹配失败，代号 %1$d, %2$s</string>
+    <string name="control_select_title">选择对应的集数</string>
+    <string name="control_user_select">用户选择 %1$s</string>
+    <string name="control_manual_search">手动搜索</string>
+    <string name="control_search">搜索</string>
+    <string name="control_episode_search_error">标题搜索出错，代号 %1$d，%2$s</string>
+    <string name="control_type_precise_search">请填写更多的关键字来搜索</string>
+    <string name="control_error_to_get_comments">获取弹幕失败，代号 %1$d, %2$s</string>
+    <string name="control_no_comment">没有弹幕</string>
+    <string name="control_danmaku_off_by_user">用户关闭弹幕</string>
+    <string name="control_danmaku_off_by_system">系统关闭弹幕，%1$s</string>
+    <string name="main_init_danmaku">初始化弹幕窗口，有 %1$d 条弹幕</string>
+</resources>

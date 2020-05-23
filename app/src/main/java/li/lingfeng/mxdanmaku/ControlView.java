@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.StringRes;
 import android.util.Pair;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -125,15 +126,15 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
             _fileName = segments.get(segments.size() - 2) + ' ' + _fileName;
         }
         String fileName = _fileName;
-        mMainView.appendStatusLog("FileName: " + fileName);
-        mMainView.appendStatusLog("VideoDuration: " + mVideoDuration);
+        mMainView.appendStatusLog(getString(R.string.control_file_name, fileName));
+        mMainView.appendStatusLog(getString(R.string.control_video_duration, mVideoDuration));
 
         HashUtils.hashFileHeadAsync(getContext(), uri, 16 * 1024 * 1024, (hash, fileSize) -> {
             if (hash == null) {
-                danmakuOff(false, "Error to get file hash.");
+                danmakuOff(false, getString(R.string.control_error_to_hash_file));
             } else {
-                mMainView.appendStatusLog("FileHash: " + hash);
-                mMainView.appendStatusLog("FileSize: " + fileSize);
+                mMainView.appendStatusLog(getString(R.string.control_file_hash, hash));
+                mMainView.appendStatusLog(getString(R.string.control_file_size, fileSize));
                 mPresenter.matchDanmaku(fileName, hash, fileSize, mVideoDuration);
                 setState(STATE_DANMAKU_MATCHING);
             }
@@ -146,20 +147,20 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
             return;
         }
         if (matchBean.errorCode != 0) {
-            danmakuOff(false, "danmaku match error, code " + matchBean.errorCode + ", " + matchBean.errorMessage);
+            danmakuOff(false, getString(R.string.control_danmaku_match_error, matchBean.errorCode, matchBean.errorMessage));
             return;
         }
         if (!matchBean.isMatched) {
             if (matchBean.matches.size() > 0) {
                 String[] titles = matchBean.matches.stream().map(m -> m.animeTitle + " - " + m.episodeTitle).toArray(String[]::new);
                 new OverlayDialog.Builder(getContext())
-                        .setTitle("Select title")
+                        .setTitle(getString(R.string.control_select_title))
                         .setItems(titles, (_dialog, which) -> {
                             MatchBean.Match match = matchBean.matches.get(which);
-                            mMainView.appendStatusLog("User choose " + match);
+                            mMainView.appendStatusLog(getString(R.string.control_user_select, match));
                             retrieveComments(match.episodeId);
                         })
-                        .setNegativeButton("Search", (_dialog, which) -> {
+                        .setNegativeButton(getString(R.string.control_manual_search), (_dialog, which) -> {
                             Logger.i("No title match.");
                             setState(STATE_USER_SEARCH);
                             _dialog.dismiss();
@@ -180,16 +181,16 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
 
     private void danmakuOff(boolean byUser, String reason) {
         if (byUser) {
-            mMainView.appendStatusLog("Danmaku off by user.");
+            mMainView.appendStatusLog(getString(R.string.control_danmaku_off_by_user));
         } else {
-            mMainView.appendStatusError("Danmaku off by system, " + reason);
+            mMainView.appendStatusError(getString(R.string.control_danmaku_off_by_system, reason));
         }
         setState(STATE_DANMAKU_HIDDEN);
     }
 
     private void showUserSearchDialog() {
         mTitleSearchDialog = new OverlayDialog.Builder(getContext())
-                .setTitle("Search title")
+                .setTitle(getString(R.string.control_manual_search))
                 .setView(R.layout.title_search_dialog)
                 .create();
         mTitleSearchDialog.setOnDismissListener(dialog -> {
@@ -230,11 +231,12 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
         }
         mTitleSearchDialog.findViewById(R.id.search_button).setEnabled(true);
         if (searchEpisodeBean.errorCode != 0) {
-            ToastUtils.show(getContext(), "Episode search error, code " + searchEpisodeBean.errorCode + ", " + searchEpisodeBean.errorMessage);
+            ToastUtils.show(getContext(), getString(R.string.control_episode_search_error,
+                    searchEpisodeBean.errorCode, searchEpisodeBean.errorMessage));
             return;
         }
         if (searchEpisodeBean.hasMore) {
-            ToastUtils.show(getContext(), "Type more words for precise search.");
+            ToastUtils.show(getContext(), getString(R.string.control_type_precise_search));
         }
 
         Object[] episodes = searchEpisodeBean.animes.stream().flatMap(a -> a.episodes.stream().map(e -> Pair.create(a, e))).toArray();
@@ -246,7 +248,7 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
         listView.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, android.R.id.text1, titles));
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Pair<Anime, Episode> pair = (Pair<Anime, Episode>) episodes[position];
-            mMainView.appendStatusLog("User choose " + pair.first + ", " + pair.second);
+            mMainView.appendStatusLog(getString(R.string.control_user_select, pair.first + ", " + pair.second));
             mTitleSearchDialog.dismiss();
             retrieveComments(pair.second.episodeId);
         });
@@ -263,11 +265,11 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
             return;
         }
         if (commentBean.errorCode != 0) {
-            danmakuOff(false, "Error to get comments, code " + commentBean.errorCode + ", " + commentBean.errorMessage);
+            danmakuOff(false, getString(R.string.control_error_to_get_comments, commentBean.errorCode, commentBean.errorMessage));
             return;
         }
         if (commentBean.count == 0) {
-            danmakuOff(false, "No comment.");
+            danmakuOff(false, getString(R.string.control_no_comment));
             return;
         }
         mCommentsGot = true;
@@ -280,5 +282,13 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
 
     public void destroy() {
         mPresenter.detachView();
+    }
+
+    public final String getString(@StringRes int resId) {
+        return getResources().getString(resId);
+    }
+
+    public final String getString(@StringRes int resId, Object... formatArgs) {
+        return getResources().getString(resId, formatArgs);
     }
 }

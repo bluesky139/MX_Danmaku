@@ -17,4 +17,23 @@
 
     <string name="pref_header_ltsystem">LTweaksSystem mode</string>
     <string name="pref_header_ltsystem_summary">For advanced users</string>
+
+    <string name="control_file_name">FileName: %1$s</string>
+    <string name="control_video_duration">VideoDuration: %1$d</string>
+    <string name="control_file_hash">FileHash: %1$s</string>
+    <string name="control_file_size">FileSize: %1$d</string>
+    <string name="control_error_to_hash_file">Error to get file hash.</string>
+    <string name="control_danmaku_match_error">Danmaku match error, code %1$d, %2$s</string>
+    <string name="control_select_title">Select episode</string>
+    <string name="control_user_select">User select %1$s</string>
+    <string name="control_manual_search">Manual search</string>
+    <string name="control_search">Search</string>
+    <string name="control_episode_search_error">Episode search error, code %1$d, %2$s</string>
+    <string name="control_type_precise_search">Type more words for precise search.</string>
+    <string name="control_error_to_get_comments">Error to get comments, code %1$d, %2$s</string>
+    <string name="control_no_comment">No comment</string>
+    <string name="control_danmaku_off_by_user">Danmaku off by user.</string>
+    <string name="control_danmaku_off_by_system">Danmaku off by system, %1$s</string>
+    <string name="main_init_danmaku">Init danmaku view with %1$d comments.</string>
+
 </resources>
