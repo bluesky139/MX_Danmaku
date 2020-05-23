@@ -114,7 +114,9 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
     private void danmakuHidden() {
         mDanmakuShown = false;
         mShowHideButton.setImageResource(R.drawable.danmaku_hidden_button);
-        mMainView.pauseDanmaku(true);
+        if (mMainView.isPrepared()) {
+            mMainView.pauseDanmaku(true);
+        }
     }
 
     private void prepareFileInfo() {
@@ -157,7 +159,8 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
                         .setTitle(getString(R.string.control_select_title))
                         .setItems(titles, (_dialog, which) -> {
                             MatchBean.Match match = matchBean.matches.get(which);
-                            mMainView.appendStatusLog(getString(R.string.control_user_select, match));
+                            mMainView.appendStatusLog(getString(R.string.control_user_select, match.animeTitle, match.episodeTitle));
+                            Logger.d(match.toString());
                             retrieveComments(match.episodeId);
                         })
                         .setNegativeButton(getString(R.string.control_manual_search), (_dialog, which) -> {
@@ -165,7 +168,7 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
                             setState(STATE_USER_SEARCH);
                             _dialog.dismiss();
                         })
-                        .setOnDismissListener(dialog -> {
+                        .setOnCancelListener(dialog -> {
                             if (mState == STATE_DANMAKU_MATCHING) {
                                 setState(STATE_DANMAKU_HIDDEN);
                             }
@@ -195,6 +198,8 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
                 .create();
         mTitleSearchDialog.setOnDismissListener(dialog -> {
             mTitleSearchDialog = null;
+        });
+        mTitleSearchDialog.setOnCancelListener(dialog -> {
             if (mState == STATE_USER_SEARCH) {
                 setState(STATE_DANMAKU_HIDDEN);
             }
@@ -248,7 +253,8 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
         listView.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, android.R.id.text1, titles));
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Pair<Anime, Episode> pair = (Pair<Anime, Episode>) episodes[position];
-            mMainView.appendStatusLog(getString(R.string.control_user_select, pair.first + ", " + pair.second));
+            mMainView.appendStatusLog(getString(R.string.control_user_select, pair.first.animeTitle, pair.second.episodeTitle));
+            Logger.d(pair.first.toString() + ',' + pair.second);
             mTitleSearchDialog.dismiss();
             retrieveComments(pair.second.episodeId);
         });

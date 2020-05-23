@@ -25,7 +25,7 @@
     <string name="control_error_to_hash_file">计算文件 hash 失败.</string>
     <string name="control_danmaku_match_error">弹幕匹配失败，代号 %1$d, %2$s</string>
     <string name="control_select_title">选择对应的集数</string>
-    <string name="control_user_select">用户选择 %1$s</string>
+    <string name="control_user_select">用户选择 %1$s - %2$s</string>
     <string name="control_manual_search">手动搜索</string>
     <string name="control_search">搜索</string>
     <string name="control_episode_search_error">标题搜索出错，代号 %1$d，%2$s</string>
