@@ -39,31 +39,42 @@ import li.lingfeng.mxdanmaku.util.Utils;
 
 public class ControlView extends RelativeLayout implements ControlContact.View {
 
-    private static final int STATE_DANMAKU_HIDDEN      = 0;
-    private static final int STATE_PREPARE_FILE_INFO   = 1;
-    private static final int STATE_DANMAKU_MATCHING    = 2;
-    private static final int STATE_RETRIEVING_COMMENTS = 3;
+    private static final int STATE_DANMAKU_HIDDEN         = 0;
+    private static final int STATE_PREPARE_FILE_INFO      = 1;
+    private static final int STATE_DANMAKU_MATCHING       = 2;
+    private static final int STATE_USER_SEARCH            = 3;
+    private static final int STATE_RETRIEVING_COMMENTS    = 4;
+    private static final int STATE_DANMAKU_VIEW_RESUME    = 5;
     private static final SparseArray<String> sStateStrings = Utils.clsIntFieldsToStrings(ControlView.class, "STATE_");
+    private int mState = STATE_DANMAKU_HIDDEN;
 
     private String mFilePath;
     private int mVideoDuration;
 
     private ImageButton mShowHideButton;
-    private boolean mDanmakuShown = false;
     private MainView mMainView;
     private AlertDialog mTitleSearchDialog;
     private ControlPresenter mPresenter = new ControlPresenter();
+    private boolean mDanmakuShown = false;
+    private boolean mCommentsGot = false;
 
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Logger.d("Change state to " + sStateStrings.get(msg.what));
-            switch (msg.what) {
+            mState = msg.what;
+            Logger.d("Change state to " + sStateStrings.get(mState));
+            switch (mState) {
                 case STATE_DANMAKU_HIDDEN:
                     danmakuHidden();
                     break;
                 case STATE_PREPARE_FILE_INFO:
                     prepareFileInfo();
+                    break;
+                case STATE_USER_SEARCH:
+                    showUserSearchDialog();
+                    break;
+                case STATE_DANMAKU_VIEW_RESUME:
+                    resumeDanmaku();
                     break;
             }
         }
@@ -82,7 +93,11 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
             if (!mDanmakuShown) {
                 mDanmakuShown = true;
                 mShowHideButton.setImageResource(R.drawable.danmaku_shown_button);
-                setState(STATE_PREPARE_FILE_INFO);
+                if (!mCommentsGot) {
+                    setState(STATE_PREPARE_FILE_INFO);
+                } else {
+                    setState(STATE_DANMAKU_VIEW_RESUME);
+                }
             } else {
                 setState(STATE_DANMAKU_HIDDEN);
             }
@@ -90,16 +105,15 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
         mPresenter.attachView(this);
     }
 
-    public void reset(String filePath, int videoDuration) {
+    public void setFile(String filePath, int videoDuration) {
         mFilePath = filePath;
         mVideoDuration = videoDuration;
-        setState(STATE_DANMAKU_HIDDEN);
     }
 
     private void danmakuHidden() {
         mDanmakuShown = false;
         mShowHideButton.setImageResource(R.drawable.danmaku_hidden_button);
-        mMainView.stopDanmaku();
+        mMainView.pauseDanmaku(true);
     }
 
     private void prepareFileInfo() {
@@ -116,8 +130,7 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
 
         HashUtils.hashFileHeadAsync(getContext(), uri, 16 * 1024 * 1024, (hash, fileSize) -> {
             if (hash == null) {
-                mMainView.appendStatusError("Error to get file hash.");
-                setState(STATE_DANMAKU_HIDDEN);
+                danmakuOff(false, "Error to get file hash.");
             } else {
                 mMainView.appendStatusLog("FileHash: " + hash);
                 mMainView.appendStatusLog("FileSize: " + fileSize);
@@ -129,6 +142,9 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
 
     @Override
     public void onDanmakuMatched(DanDanMatchBean matchBean) {
+        if (mState != STATE_DANMAKU_MATCHING) {
+            return;
+        }
         if (matchBean.errorCode != 0) {
             danmakuOff(false, "danmaku match error, code " + matchBean.errorCode + ", " + matchBean.errorMessage);
             return;
@@ -145,12 +161,17 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
                         })
                         .setNegativeButton("Search", (_dialog, which) -> {
                             Logger.i("No title match.");
-                            showUserSearchDialog();
+                            setState(STATE_USER_SEARCH);
                             _dialog.dismiss();
+                        })
+                        .setOnDismissListener(dialog -> {
+                            if (mState == STATE_DANMAKU_MATCHING) {
+                                setState(STATE_DANMAKU_HIDDEN);
+                            }
                         })
                         .show();
             } else {
-                showUserSearchDialog();
+                setState(STATE_USER_SEARCH);
             }
         } else {
             retrieveComments(matchBean.matches.get(0).episodeId);
@@ -166,11 +187,6 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
         setState(STATE_DANMAKU_HIDDEN);
     }
 
-    private void retrieveComments(int episodeId) {
-        mPresenter.getComments(episodeId);
-        setState(STATE_RETRIEVING_COMMENTS);
-    }
-
     private void showUserSearchDialog() {
         mTitleSearchDialog = new OverlayDialog.Builder(getContext())
                 .setTitle("Search title")
@@ -178,6 +194,9 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
                 .create();
         mTitleSearchDialog.setOnDismissListener(dialog -> {
             mTitleSearchDialog = null;
+            if (mState == STATE_USER_SEARCH) {
+                setState(STATE_DANMAKU_HIDDEN);
+            }
         });
         mTitleSearchDialog.show();
 
@@ -206,6 +225,9 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
 
     @Override
     public void onEpisodeSearched(DanDanSearchEpisodeBean searchEpisodeBean) {
+        if (mState != STATE_USER_SEARCH) {
+            return;
+        }
         mTitleSearchDialog.findViewById(R.id.search_button).setEnabled(true);
         if (searchEpisodeBean.errorCode != 0) {
             ToastUtils.show(getContext(), "Episode search error, code " + searchEpisodeBean.errorCode + ", " + searchEpisodeBean.errorMessage);
@@ -230,16 +252,29 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
         });
     }
 
+    private void retrieveComments(int episodeId) {
+        mPresenter.getComments(episodeId);
+        setState(STATE_RETRIEVING_COMMENTS);
+    }
+
     @Override
     public void onCommentsGot(DanDanCommentBean commentBean) {
+        if (mState != STATE_RETRIEVING_COMMENTS) {
+            return;
+        }
         if (commentBean.errorCode != 0) {
-            mMainView.appendStatusError("Error to get comments, code " + commentBean.errorCode + ", " + commentBean.errorMessage);
+            danmakuOff(false, "Error to get comments, code " + commentBean.errorCode + ", " + commentBean.errorMessage);
             return;
         }
         if (commentBean.count == 0) {
-            mMainView.appendStatusLog("No comment.");
+            danmakuOff(false, "No comment.");
             return;
         }
+        mCommentsGot = true;
         mMainView.initDanmakuView(commentBean.comments);
+    }
+
+    private void resumeDanmaku() {
+        mMainView.resumeDanmaku();
     }
 }

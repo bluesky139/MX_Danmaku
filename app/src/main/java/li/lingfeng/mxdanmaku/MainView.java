@@ -108,12 +108,24 @@ public class MainView extends RelativeLayout {
         }
     }
 
+    public boolean isPrepared() {
+        return mDanmakuView.isPrepared();
+    }
+
     public void resumeDanmaku() {
         mDanmakuView.resume();
+        mDanmakuView.setVisibility(View.VISIBLE);
     }
 
     public void pauseDanmaku() {
+        pauseDanmaku(false);
+    }
+
+    public void pauseDanmaku(boolean hide) {
         mDanmakuView.pause();
+        if (hide) {
+            mDanmakuView.setVisibility(View.GONE);
+        }
     }
 
     public void stopDanmaku() {

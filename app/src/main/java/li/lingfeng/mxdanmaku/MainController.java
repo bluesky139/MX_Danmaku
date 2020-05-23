@@ -84,10 +84,12 @@ public class MainController extends ContentProvider {
             if (msg.what == OP.OP_CREATE) {
                 String filePath = values.getAsString("file_path");
                 int videoDuration = values.getAsInteger("video_duration");
-                if (mMainView == null) {
-                    createViews();
+                if (mMainView != null) {
+                    Logger.e("Views are already created, should be destroyed first.");
+                    return;
                 }
-                mControlView.reset(filePath, videoDuration);
+                createViews();
+                mControlView.setFile(filePath, videoDuration);
                 mMainView.setVisibility(View.VISIBLE);
                 mControlView.setVisibility(View.VISIBLE);
                 mMainViewVisible = true;
@@ -125,10 +127,13 @@ public class MainController extends ContentProvider {
                     mMainView.pauseDanmaku();
                     break;
                 case OP.OP_DESTROY:
-                    mWindowManager.removeView(mMainView);
-                    mWindowManager.removeView(mControlView);
-                    mMainView = null;
-                    mControlView = null;
+                    if (mMainView != null) {
+                        mMainView.stopDanmaku();
+                        mWindowManager.removeView(mMainView);
+                        mWindowManager.removeView(mControlView);
+                        mMainView = null;
+                        mControlView = null;
+                    }
                     break;
                 default:
                     Logger.e("Unknown op " + OP.sOpStrings.get(msg.what));
