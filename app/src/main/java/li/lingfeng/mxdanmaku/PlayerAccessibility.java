@@ -37,7 +37,7 @@ public class PlayerAccessibility extends AccessibilityService {
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
                 if (isMXPlayer(event)) {
                     String className = event.getClassName().toString();
-                    if ("com.mxtech.videoplayer.ActivityScreen".equals(className) || "com.mxtech.videoplayer.ad.ActivityScreen".equals(className)) {
+                    if ("com.mxtech.videoplayer.pro.ActivityScreen".equals(className) || "com.mxtech.videoplayer.ad.ActivityScreen".equals(className)) {
                         String newPath = IntentRedirector.popFilePath();
                         if (newPath != null) {
                             sendCommand(OP.OP_DESTROY); // Destroy last.
