@@ -17,10 +17,10 @@ import okhttp3.Response;
 
 public class HashUtils {
 
-    public static Pair<String, Integer> hashFileHead(Context context, Uri uri, int headSize) {
+    public static Pair<String, Long> hashFileHead(Context context, Uri uri, int headSize) {
         InputStream input = null;
         try {
-            int fileSize;
+            long fileSize;
             String scheme = uri.getScheme();
             if ("http".equals(scheme) || "https".equals(scheme)) {
                 Request request = new Request.Builder().url(uri.toString()).build();
@@ -28,7 +28,7 @@ public class HashUtils {
                 if (!response.isSuccessful()) {
                     throw new IOException("http hash request response " + response.code());
                 }
-                fileSize = (int) response.body().contentLength();
+                fileSize = response.body().contentLength();
                 input = response.body().byteStream();
             } else {
                 input = context.getContentResolver().openInputStream(uri);
@@ -67,16 +67,16 @@ public class HashUtils {
         }
     }
 
-    public static void hashFileHeadAsync(Context context, Uri uri, int headSize, Callback.C2<String, Integer> callback) {
-        new AsyncTask<Void, Void, Pair<String, Integer>>() {
+    public static void hashFileHeadAsync(Context context, Uri uri, int headSize, Callback.C2<String, Long> callback) {
+        new AsyncTask<Void, Void, Pair<String, Long>>() {
 
             @Override
-            protected Pair<String, Integer> doInBackground(Void... voids) {
+            protected Pair<String, Long> doInBackground(Void... voids) {
                 return hashFileHead(context, uri, headSize);
             }
 
             @Override
-            protected void onPostExecute(Pair<String, Integer> result) {
+            protected void onPostExecute(Pair<String, Long> result) {
                 callback.onResult(result.first, result.second);
             }
         }.execute();

@@ -8,7 +8,7 @@ import li.lingfeng.mxdanmaku.net.NetManager;
 
 public class ControlModel {
 
-    public Observable<MatchBean> matchDanmaku(String fileName, String fileHash, int fileSize, int videoDuration) {
+    public Observable<MatchBean> matchDanmaku(String fileName, String fileHash, long fileSize, int videoDuration) {
         return NetManager.instance().getRetrofitService().match(fileName, fileHash, fileSize,
                 videoDuration, "hashAndFileName");
     }

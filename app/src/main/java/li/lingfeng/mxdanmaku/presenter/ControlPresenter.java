@@ -15,7 +15,7 @@ public class ControlPresenter extends BasePresenter<ControlContact.View> impleme
     private ControlModel model = new ControlModel();
 
     @Override
-    public void matchDanmaku(String fileName, String fileHash, int fileSize, int videoDuration) {
+    public void matchDanmaku(String fileName, String fileHash, long fileSize, int videoDuration) {
         Disposable disposable = model.matchDanmaku(fileName, fileHash, fileSize, videoDuration)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(matchBean -> {

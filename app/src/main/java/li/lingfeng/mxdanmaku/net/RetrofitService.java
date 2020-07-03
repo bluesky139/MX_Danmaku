@@ -18,7 +18,7 @@ public interface RetrofitService {
     @FormUrlEncoded
     @Headers({"Accept: application/json"})
     Observable<MatchBean> match(@Field("fileName") String fileName, @Field("fileHash") String fileHash,
-                                @Field("fileSize") int fileSize, @Field("videoDuration") int videoDuration,
+                                @Field("fileSize") long fileSize, @Field("videoDuration") int videoDuration,
                                 @Field("matchMode") String matchMode);
 
     @GET("search/episodes")

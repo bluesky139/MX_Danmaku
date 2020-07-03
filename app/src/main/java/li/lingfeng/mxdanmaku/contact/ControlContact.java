@@ -17,7 +17,7 @@ public interface ControlContact {
 
     interface Presenter extends IPresenter<View> {
 
-        void matchDanmaku(String fileName, String fileHash, int fileSize, int videoDuration);
+        void matchDanmaku(String fileName, String fileHash, long fileSize, int videoDuration);
         void searchEpisode(String anime);
         void getComments(int episodeId);
     }
