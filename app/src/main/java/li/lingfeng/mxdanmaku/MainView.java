@@ -186,6 +186,6 @@ public class MainView extends RelativeLayout {
         mStatusView.setText(mStatusView.getText().toString() + '\n' + msg);
         mHandler.removeCallbacks(mHideStatusRunnable);
         mStatusView.setVisibility(View.VISIBLE);
-        mHandler.postDelayed(mHideStatusRunnable, 4000);
+        mHandler.postDelayed(mHideStatusRunnable, 8000);
     }
 }
