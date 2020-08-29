@@ -176,7 +176,9 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
                 setState(STATE_USER_SEARCH);
             }
         } else {
-            retrieveComments(matchBean.matches.get(0).episodeId);
+            MatchBean.Match match = matchBean.matches.get(0);
+            mMainView.appendStatusLog("Anime match " + match.animeTitle + " - " + match.episodeTitle);
+            retrieveComments(match.episodeId);
         }
     }
 
