@@ -45,7 +45,7 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
     private static final int STATE_DANMAKU_MATCHING       = 2;
     private static final int STATE_USER_SEARCH            = 3;
     private static final int STATE_RETRIEVING_COMMENTS    = 4;
-    private static final int STATE_DANMAKU_VIEW_RESUME    = 5;
+    private static final int STATE_DANMAKU_VIEW_SHOW      = 5;
     private static final SparseArray<String> sStateStrings = Utils.clsIntFieldsToStrings(ControlView.class, "STATE_");
     private int mState = STATE_DANMAKU_HIDDEN;
 
@@ -74,8 +74,8 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
                 case STATE_USER_SEARCH:
                     showUserSearchDialog();
                     break;
-                case STATE_DANMAKU_VIEW_RESUME:
-                    resumeDanmaku();
+                case STATE_DANMAKU_VIEW_SHOW:
+                    showDanmaku();
                     break;
             }
         }
@@ -97,7 +97,7 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
                 if (!mCommentsGot) {
                     setState(STATE_PREPARE_FILE_INFO);
                 } else {
-                    setState(STATE_DANMAKU_VIEW_RESUME);
+                    setState(STATE_DANMAKU_VIEW_SHOW);
                 }
             } else {
                 setState(STATE_DANMAKU_HIDDEN);
@@ -114,9 +114,7 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
     private void danmakuHidden() {
         mDanmakuShown = false;
         mShowHideButton.setImageResource(R.drawable.danmaku_hidden_button);
-        if (mMainView.isPrepared()) {
-            mMainView.pauseDanmaku(true);
-        }
+        mMainView.hideDanmaku();
     }
 
     private void prepareFileInfo() {
@@ -282,8 +280,8 @@ public class ControlView extends RelativeLayout implements ControlContact.View {
         mMainView.initDanmakuView(commentBean.comments);
     }
 
-    private void resumeDanmaku() {
-        mMainView.resumeDanmaku();
+    private void showDanmaku() {
+        mMainView.showDanmaku();
     }
 
     public void destroy() {

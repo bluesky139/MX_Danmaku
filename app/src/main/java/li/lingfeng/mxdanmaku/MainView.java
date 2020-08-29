@@ -35,7 +35,9 @@ public class MainView extends RelativeLayout {
     private Runnable mHideStatusRunnable = () -> {
         mStatusView.setVisibility(View.GONE);
     };
-    private boolean mPauseAtStart = false;
+    private boolean mShown = true;
+    private boolean mPlaying = true;
+    private boolean mStarted = false;
 
     public MainView(Context context) {
         super(context);
@@ -84,12 +86,8 @@ public class MainView extends RelativeLayout {
 
                 @Override
                 public void prepared() {
-                    Logger.v("Start from " + mSecondsToSeek + "s.");
-                    mDanmakuView.start(mSecondsToSeek * 1000L);
-                    if (mPauseAtStart) {
-                        mHandler.post(() -> {
-                            mDanmakuView.pause();
-                        });
+                    if (mShown && mPlaying) {
+                        start();
                     }
                 }
             });
@@ -106,6 +104,12 @@ public class MainView extends RelativeLayout {
         return parser;
     }
 
+    private void start() {
+        Logger.v("Start from " + mSecondsToSeek + "s.");
+        mDanmakuView.start(mSecondsToSeek * 1000L);
+        mStarted = true;
+    }
+
     public void seekTo(int seconds) {
         mSecondsToSeek = seconds;
         if (mDanmakuView.isPrepared() && Math.abs(mDanmakuView.getCurrentTime() - seconds * 1000L) > 2000L) {
@@ -118,22 +122,50 @@ public class MainView extends RelativeLayout {
         return mDanmakuView.isPrepared();
     }
 
+    public void showDanmaku() {
+        mShown = true;
+        if (!mPlaying) {
+            return;
+        }
+        if (!mStarted) {
+            if (mDanmakuView.isPrepared()) {
+                start();
+            }
+        } else {
+            mDanmakuView.showAndResumeDrawTask(mSecondsToSeek * 1000L);
+        }
+    }
+
+    public void hideDanmaku() {
+        mShown = false;
+        if (mStarted) {
+            mDanmakuView.hideAndPauseDrawTask();
+        }
+    }
+
     public void resumeDanmaku() {
-        mDanmakuView.resume();
-        mDanmakuView.setVisibility(View.VISIBLE);
-        mPauseAtStart = false;
+        mPlaying = true;
+        if (!mShown) {
+            return;
+        }
+        if (!mStarted) {
+            if (mDanmakuView.isPrepared()) {
+                start();
+            }
+        } else {
+            if (mDanmakuView.isShown()) {
+                mDanmakuView.resume();
+            } else {
+                mDanmakuView.showAndResumeDrawTask(mSecondsToSeek * 1000L);
+            }
+        }
     }
 
     public void pauseDanmaku() {
-        pauseDanmaku(false);
-    }
-
-    public void pauseDanmaku(boolean hide) {
-        mDanmakuView.pause();
-        if (hide) {
-            mDanmakuView.setVisibility(View.GONE);
+        mPlaying = false;
+        if (mStarted) {
+            mDanmakuView.pause();
         }
-        mPauseAtStart = true;
     }
 
     public void stopDanmaku() {
