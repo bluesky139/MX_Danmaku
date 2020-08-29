@@ -51,7 +51,7 @@ public class MainView extends RelativeLayout {
         appendStatusLog(getResources().getString(R.string.main_init_danmaku, comments.size()));
         // 设置最大显示行数
         HashMap<Integer, Integer> maxLinesPair = new HashMap<Integer, Integer>();
-        maxLinesPair.put(BaseDanmaku.TYPE_SCROLL_RL, 5); // 滚动弹幕最大显示5行
+        maxLinesPair.put(BaseDanmaku.TYPE_SCROLL_RL, 4); // 滚动弹幕最大显示5行
         // 设置是否禁止重叠
         HashMap<Integer, Boolean> overlappingEnablePair = new HashMap<Integer, Boolean>();
         overlappingEnablePair.put(BaseDanmaku.TYPE_SCROLL_RL, true);
@@ -61,7 +61,7 @@ public class MainView extends RelativeLayout {
         mDanmakuContext
                 .setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3)
                 .setDuplicateMergingEnabled(false)
-                .setScrollSpeedFactor(1.3f)
+                .setScrollSpeedFactor(1.8f)
                 .setScaleTextSize(0.7f)
                 .setCacheStuffer(new SimpleTextCacheStuffer(), null)
                 .setMaximumLines(maxLinesPair)
